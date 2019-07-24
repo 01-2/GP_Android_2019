@@ -1,4 +1,21 @@
 package com.gp_android_2019.io;
 
-public class ioAppFragment {
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+
+import com.gp_android_2019.R;
+
+public class ioAppFragment extends Fragment {
+    public ioAppFragment(){
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        return inflater.inflate(R.layout.fragment_io_app, container, false);
+    }
 }
