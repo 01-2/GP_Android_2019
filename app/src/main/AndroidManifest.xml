@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gp_android_2019">
+    package="com.gp_android_2019">
 
     <application
         android:allowBackup="true"
@@ -18,7 +18,7 @@
         </activity>
         <activity android:name=".benchActivity"></activity>
         <activity android:name=".fragActivity"></activity>
-        <activity android:name=".ioActivity"></activity>
+        <activity android:name=".io.ioActivity"></activity>
     </application>
 
 </manifest>
