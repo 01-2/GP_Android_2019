@@ -1,4 +1,4 @@
-package com.example.gp_android_2019;
+package com.gp_android_2019;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
