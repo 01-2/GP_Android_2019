@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,9 +17,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".benchActivity"></activity>
-        <activity android:name=".fragActivity"></activity>
-        <activity android:name=".io.ioActivity"></activity>
+        <activity android:name=".bench.benchActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".bench.DispBenchActivity"
+            android:parentActivityName=".bench.benchActivity"/>
+        <activity android:name=".fragActivity" />
+        <activity android:name=".io.ioActivity" />
     </application>
 
 </manifest>

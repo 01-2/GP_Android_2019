@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.gp_android_2019.R;
+import com.gp_android_2019.bench.benchActivity;
 import com.gp_android_2019.io.ioActivity;
 
 public class MainActivity extends AppCompatActivity {

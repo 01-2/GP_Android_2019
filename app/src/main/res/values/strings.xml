@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">GP_Android_2019</string>
+    <string name="seq_r">Sequence Read</string>
+    <string name="seq_w">Sequence Write</string>
+    <string name="ran_r">Random Read</string>
+    <string name="ran_w">Random Wrtie</string>
+    <string name="db_insert">INSERT</string>
+    <string name="db_update">UPDATE</string>
+    <string name="db_delete">DELETE</string>
+    <string name="rw_title">Read / Write</string>
+    <string name="db_title">DB Transaction</string>
+    <string name="sel_all_btn">ALL</string>
+    <string name="bench_start_btn">START</string>
 </resources>
