@@ -19,6 +19,7 @@
         <activity android:name=".benchActivity"></activity>
         <activity android:name=".fragActivity"></activity>
         <activity android:name=".io.ioActivity"></activity>
+        <activity android:name=".io.ioAppResult"></activity>
     </application>
 
 </manifest>
