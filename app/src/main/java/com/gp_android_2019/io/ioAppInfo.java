@@ -15,6 +15,8 @@ public class ioAppInfo {
     public Drawable mIcon = null;
     public String mAppName = null;
     public String mAppPackge = null;
+    public String mDataDir = null;
+    public String mSrcDir = null;
 
     public static final AppFilter THIRD_PARTY_FILTER = new AppFilter() {
         public void init() {

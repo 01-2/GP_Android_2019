@@ -36,7 +36,6 @@ import java.util.List;
 
 public class ioActivity extends AppCompatActivity {
     private static final String TAG = ioActivity.class.getSimpleName();
-    // �޴� KEY
     private final int MENU_DOWNLOAD = 0;
     private final int MENU_ALL = 1;
     private int MENU_MODE = MENU_DOWNLOAD;
@@ -47,7 +46,6 @@ public class ioActivity extends AppCompatActivity {
     private ListView mListView = null;
     private IAAdapter mAdapter = null;
 
-    private int runCheck = 0;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +56,7 @@ public class ioActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.applist1);
 
         mAdapter = new IAAdapter(this);
+
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -65,19 +64,24 @@ public class ioActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> av, View view, int position,
                                     long id) {
                 // TODO Auto-generated method stub
+                ioAppInfo temp = mAdapter.mListData.get(position);
+
                 String app_name = ((TextView) view.findViewById(R.id.app_name)).getText().toString();
                 String package_name = ((TextView) view.findViewById(R.id.app_package)).getText().toString();
-                Toast.makeText(ioActivity.this, package_name, Toast.LENGTH_SHORT).show();
+                String src_dir = temp.mSrcDir;
+                String data_dir = temp.mDataDir;
 
                 Intent intent = new Intent(ioActivity.this, ioAppResult.class);
+
+                intent.putExtra("APP_NAME", app_name);
                 intent.putExtra("PACK_NAME", package_name);
+                intent.putExtra("SDIR_NAME", src_dir);
+                intent.putExtra("DDIR_NAME", data_dir);
+
                 startActivity(intent);
-                runCheck = 1;
             }
         });
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -205,6 +209,13 @@ public class ioActivity extends AppCompatActivity {
                     addInfo.mAppName = app.loadLabel(pm).toString();
                     // App Package Name
                     addInfo.mAppPackge = app.packageName;
+
+                    // App Data Dir
+                    addInfo.mDataDir = app.dataDir;
+
+                    // App Src Dir
+                    addInfo.mSrcDir = app.sourceDir;
+
                     mListData.add(addInfo);
                 }
             }

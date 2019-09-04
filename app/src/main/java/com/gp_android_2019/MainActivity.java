@@ -17,17 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button fragBtn = (Button)findViewById(R.id.frag_btn);
         Button ioBtn = (Button)findViewById(R.id.iocheck_btn);
         Button benchBtn = (Button)findViewById(R.id.bench_btn);
-
-        fragBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), fragActivity.class);
-                startActivity(intent);
-            }
-        });
 
         ioBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,20 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp">
-        <Button
-            android:id="@+id/frag_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="FRAGMENTATION" />
 
         <Button
             android:id="@+id/iocheck_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/frag_btn"
             android:text="I/O CHECK" />
-
 
         <Button
             android:id="@+id/bench_btn"
