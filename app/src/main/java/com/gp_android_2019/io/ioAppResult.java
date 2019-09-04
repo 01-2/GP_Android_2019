@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gp_android_2019.R;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import com.jaredrummler.android.processes.AndroidProcesses;
@@ -21,18 +23,18 @@ import com.jaredrummler.android.processes.models.Stat;
 
 public class ioAppResult extends AppCompatActivity {
 
-    Intent prevIntent = new Intent(this.getIntent());
-    String app_name = prevIntent.getStringExtra("APP_NAME");
-    String pack_name = prevIntent.getStringExtra("PACK_NAME");
-    String sdir_name = prevIntent.getStringExtra("SDIR_NAME");
-    String ddir_name = prevIntent.getStringExtra("DDIR_NAME");
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_io_result);
+        Intent prevIntent = new Intent(this.getIntent());
 
-
+        final String app_name = prevIntent.getStringExtra("APP_NAME");
+        final String pack_name = prevIntent.getStringExtra("PACK_NAME");
+        final String sdir_name = prevIntent.getStringExtra("SDIR_NAME");
+        final String ddir_name = prevIntent.getStringExtra("DDIR_NAME");
 
         Button appLaunchBtn = (Button) findViewById(R.id.app_launch);
         Switch traceSwitch = (Switch) findViewById(R.id.trace_switch);
@@ -65,11 +67,55 @@ public class ioAppResult extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true){
-                    int target_pid = getAppPid();
+                    int target_pid = getAppPid(pack_name);
                     System.out.println(target_pid);
+                    try{
+                        Process su = Runtime.getRuntime().exec("su");
+                        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
 
-                } else {
+                        outputStream.writeBytes("echo " + target_pid
+                                + " > /sys/kernel/debug/tracing/set_ftrace_pid");
+                        outputStream.flush();
 
+                        outputStream.writeBytes(
+                                "echo function > /sys/kernel/debug/tracing/current_tracer");
+                        outputStream.flush();
+
+                        outputStream.writeBytes(
+                                "echo nop > /sys/kernel/debug/tracing/current_tracer");
+                        outputStream.flush();
+
+                        outputStream.writeBytes("echo 1 > /sys/kernel/debug/tracing/tracing_on");
+                        outputStream.flush();
+
+                        try {
+                            su.waitFor();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        outputStream.close();
+                    }catch(IOException e){
+                        e.printStackTrace();
+                        System.out.println("tracing_on_failed");
+                    }
+                }
+                else {
+                    try{
+                        Process su = Runtime.getRuntime().exec("su");
+                        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
+
+                        outputStream.writeBytes("echo 0 > /sys/kernel/debug/tracing/tracing_on");
+                        outputStream.flush();
+                        try {
+                            su.waitFor();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        outputStream.close();
+                    }catch(IOException e){
+                        e.printStackTrace();
+                        System.out.println("tracing_off_failed");
+                    }
                 }
             }
         });
@@ -84,7 +130,7 @@ public class ioAppResult extends AppCompatActivity {
         });
     }
 
-    public int getAppPid(){
+    public int getAppPid(String p_name){
         int target_pid = 0;
         try  {
             List<AndroidAppProcess> processes = AndroidProcesses.getRunningAppProcesses();
@@ -92,7 +138,7 @@ public class ioAppResult extends AppCompatActivity {
                 String processName = process.name;
                 Stat stat = process.stat();
                 int pid = stat.getPid();
-                if(processName.compareTo(pack_name) == 0) target_pid = pid;
+                if(processName.compareTo(p_name) == 0) target_pid = pid;
             }
         } catch (Exception e)  {
             e.fillInStackTrace();
