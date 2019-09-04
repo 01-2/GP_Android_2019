@@ -8,3 +8,8 @@
 #endif //GP_ANDROID_2019_RW_BENCH_H
 
 using namespace std;
+
+double bench_read_seq();
+double bench_read_ran();
+double bench_write_seq();
+double bench_write_ran();

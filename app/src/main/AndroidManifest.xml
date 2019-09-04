@@ -17,10 +17,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name=".bench.benchActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".bench.DispBenchActivity"
             android:parentActivityName=".bench.benchActivity"/>
+
+
         <activity android:name=".fragActivity" />
         <activity android:name=".io.ioActivity" />
     </application>

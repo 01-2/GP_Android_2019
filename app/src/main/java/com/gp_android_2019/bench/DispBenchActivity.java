@@ -1,22 +1,20 @@
 package com.gp_android_2019.bench;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListView;
-
+import android.content.Intent;
 import com.gp_android_2019.R;
 
-public class DispBenchActivity extends AppCompatActivity {
-    static final String[] ttl = { "Sequence Read", "Sequence Write",
-            "Random Read", "Random Wirte" };
-    String[] data = { "1", "22", "333", "4444" };
+import android.widget.ListView;
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("rw_bench");
-    }
+import java.util.ArrayList;
+
+public class DispBenchActivity extends AppCompatActivity {
+    String[] ttl_rw = { "Sequence Read", "Sequence Write", "Random Read", "Random Write" };
+    String[] ttl_db = { "INSERT", "UPDATE", "DELETE" };
+
+    ArrayList<String> results_rw;
+    ArrayList<String> results_db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,33 +22,33 @@ public class DispBenchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_disp_bench);
 
         Intent intent = getIntent();
-        boolean[] isCheck = intent.getBooleanArrayExtra("data");
+        ArrayList<String> results_json = intent.getStringArrayListExtra("results_rw");
+        results_db = intent.getStringArrayListExtra("results_db");
+
+        ParseResultBench parse = new ParseResultBench(results_json);
+        results_rw = parse.getPar();
 
         DispListViewAdapter adapter = new DispListViewAdapter();
-
         ListView rw_list = (ListView) findViewById(R.id.rw_listView);
         rw_list.setAdapter(adapter);
 
-        if (isCheck.length == 0) {
-
+        for (int i = 0; i < results_rw.size(); i++) {
+            String tmp = results_rw.get(i);
+            int id = Integer.valueOf(tmp.substring(0, 1));
+            String res = tmp.substring(1);
+            adapter.addItem(ttl_rw[id], res);
         }
 
-        for (int i = 0; i < 4; i++) {
-            if (isCheck[i]) {
-                adapter.addItem(ttl[i], data[i]);
-            }
+        for (int i = 0; i < results_db.size(); i++) {
+            String tmp = results_db.get(i);
+            int id = Integer.valueOf(tmp.substring(0, 1));
+            String res = tmp.substring(1);
+            adapter.addItem(ttl_db[id], res);
         }
+
+//        if (adapter.isEmpty()) {
+//            TextView tv = (TextView) findViewById(R.id.rw_ttl);
+//            tv.setVisibility(View.GONE);
+//        }
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String seqRead();
-    public native String seqWrite();
-    public native String ranRead();
-    public native String ranWrite();
-    public native String dbInsert();
-    public native String dbUpdate();
-    public native String dbDelete();
 }

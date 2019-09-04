@@ -1,14 +1,66 @@
 <resources>
     <string name="app_name">GP_Android_2019</string>
+
+    <string name="rw_title">Read / Write</string>
     <string name="seq_r">Sequence Read</string>
     <string name="seq_w">Sequence Write</string>
     <string name="ran_r">Random Read</string>
-    <string name="ran_w">Random Wrtie</string>
+    <string name="ran_w">Random Write</string>
+
+    <string name="db_title">DB Transaction</string>
     <string name="db_insert">INSERT</string>
     <string name="db_update">UPDATE</string>
     <string name="db_delete">DELETE</string>
-    <string name="rw_title">Read / Write</string>
-    <string name="db_title">DB Transaction</string>
-    <string name="sel_all_btn">ALL</string>
+
+    <string name="all_btn">ALL</string>
     <string name="bench_start_btn">START</string>
+
+    <string name="bs_tv">Block size</string>
+    <string-array name="bench_bs">
+        <item>4K</item>
+        <item>1K</item>
+        <item>8K</item>
+        <item>16K</item>
+        <item>32K</item>
+        <item>64K</item>
+    </string-array>
+
+    <string name="io_size_tv">Total I/O size</string>
+    <string-array name="bench_io_size">
+        <item>1G</item>
+        <item>128M</item>
+        <item>256M</item>
+        <item>512M</item>
+    </string-array>
+
+    <string name="numjobs_tv"># of thread</string>
+    <string-array name="bench_numjobs">
+        <item>1</item>
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+    </string-array>
+
+    <string name="runtime_tv">Runtime(s)</string>
+    <string-array name="bench_runtime">
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+    </string-array>
+
+    <string name="direct_tv">Buffered/Direct</string>
+    <string-array name="bench_direct">
+        <item>Buffered IO</item>
+        <item>Direct IO</item>
+    </string-array>
+
+    <string name="nTrans_tv"># of Transaction</string>
+    <string-array name="nTrans">
+        <item>1000</item>
+        <item>5000</item>
+        <item>10000</item>
+    </string-array>
+
 </resources>

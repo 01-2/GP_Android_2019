@@ -14,9 +14,7 @@ import java.util.ArrayList;
 public class DispListViewAdapter extends BaseAdapter {
     private ArrayList<DispListViewItem> listViewItemList = new ArrayList<DispListViewItem>();
 
-    public DispListViewAdapter() {
-
-    }
+    public DispListViewAdapter() { }
 
     public void addItem(String element, String content) {
         DispListViewItem item = new DispListViewItem();
@@ -51,12 +49,12 @@ public class DispListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.disp_item, parent, false);
         }
 
-        TextView elementTextView = (TextView) convertView.findViewById(R.id.element) ;
+        TextView typeTextView = (TextView) convertView.findViewById(R.id.type) ;
         TextView resultTextView = (TextView) convertView.findViewById(R.id.result) ;
 
         DispListViewItem listViewItem = listViewItemList.get(position);
 
-        elementTextView.setText(listViewItem.getElement());
+        typeTextView.setText(listViewItem.getElement());
         resultTextView.setText(listViewItem.getContent());
 
         return convertView;
