@@ -58,7 +58,7 @@
 
     <string name="nTrans_tv"># of Transaction</string>
     <string-array name="nTrans">
-        <item>1000</item>
+        <item>3000</item>
         <item>5000</item>
         <item>10000</item>
     </string-array>

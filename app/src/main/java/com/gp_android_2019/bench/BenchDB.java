@@ -14,6 +14,7 @@ public class BenchDB {
         for (int i=0; i<numOfTrans; i++) {
             dbHelper.insert();
         }
+        isEmpty = false;
     }
     void genWorkLoad_UPDATE() {
         for (int i=0; i<numOfTrans; i++) {
@@ -24,7 +25,6 @@ public class BenchDB {
         for (int i=0; i<numOfTrans; i++) {
             dbHelper.delete(i);
         }
-        isEmpty = false;
     }
 
     String benchInsert() {
@@ -32,9 +32,7 @@ public class BenchDB {
         genWorkLoad_INSERT();
         long end = System.currentTimeMillis();
 
-        //dbHelper.selete("0");
-
-        return numOfTrans / ((end - start)/1000) + " trans/s";
+        return (long)numOfTrans / ((end - start)/1000) + " trans/s";
     }
 
     String benchUpdate() {
@@ -46,7 +44,7 @@ public class BenchDB {
         genWorkLoad_UPDATE();
         long end = System.currentTimeMillis();
 
-        return numOfTrans / ((end - start)/1000) + " trans/s";
+        return (long)numOfTrans / ((end - start)/1000) + " trans/s";
     }
 
     String benchDelete() {
@@ -58,6 +56,6 @@ public class BenchDB {
         genWorkLoad_DELETE();
         long end = System.currentTimeMillis();
 
-        return numOfTrans / ((end - start) / 1000) + " trans/s";
+        return (long)numOfTrans / ((end - start) / 1000) + " trans/s";
     }
 }

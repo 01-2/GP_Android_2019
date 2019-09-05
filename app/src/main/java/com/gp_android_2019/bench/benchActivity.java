@@ -3,6 +3,7 @@ package com.gp_android_2019.bench;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import com.gp_android_2019.R;
 import android.content.Intent;
@@ -64,6 +65,7 @@ public class benchActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Select at least one Type", Toast.LENGTH_SHORT).show();
             return ;
         }
+        isEmpty = true;
 
         makeParameter();
 
@@ -87,13 +89,22 @@ public class benchActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            results_rw = new ArrayList<>();
+            results_db = new ArrayList<>();
+
             asyncDialog = new ProgressDialog(mContext);
             asyncDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             asyncDialog.setMessage("Benchmarking..");
-            asyncDialog.setCanceledOnTouchOutside(false);
 
-            results_rw = new ArrayList<>();
-            results_db = new ArrayList<>();
+            asyncDialog.setCanceledOnTouchOutside(false);
+            asyncDialog.setCancelable(true);
+
+            asyncDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            cancel(false);
+                        }
+                    });
 
             // show dialog
             asyncDialog.show();
@@ -133,7 +144,11 @@ public class benchActivity extends AppCompatActivity {
                     results_rw.add(res_rw);
                 }
 
-                progress += (i+1)*(int)(100/rwCheck.length);
+                if(isCancelled() == true) {
+                    return null;
+                }
+
+                progress += (int)(100/rwCheck.length);
             }
 
             progress = 10;
@@ -157,10 +172,14 @@ public class benchActivity extends AppCompatActivity {
                             break;
                     }
 
+                    if(isCancelled() == true) {
+                        return null;
+                    }
+
                     results_db.add(res_db);
                 }
 
-                progress += (i+1)*(int)(100/dbCheck.length);
+                progress += (int)(100/dbCheck.length);
             }
 
             return null;
@@ -171,7 +190,7 @@ public class benchActivity extends AppCompatActivity {
             asyncDialog.setMessage(progress[0]);
             asyncDialog.setProgress(Integer.parseInt(progress[1]));
 
-            //super.onProgressUpdate(values);
+            super.onProgressUpdate(progress);
         }
 
         @Override
@@ -179,10 +198,12 @@ public class benchActivity extends AppCompatActivity {
             asyncDialog.dismiss();
             super.onPostExecute(result);
 
-            Intent intent = new Intent(getApplicationContext(), DispBenchActivity.class);
-            intent.putExtra("results_rw", results_rw);
-            intent.putExtra("results_db", results_db);
-            startActivity(intent);
+            if(isCancelled() != true) {
+                Intent intent = new Intent(getApplicationContext(), DispBenchActivity.class);
+                intent.putExtra("results_rw", results_rw);
+                intent.putExtra("results_db", results_db);
+                startActivity(intent);
+            }
         }
     }
 
