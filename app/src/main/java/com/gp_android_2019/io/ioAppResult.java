@@ -2,6 +2,7 @@ package com.gp_android_2019.io;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -13,8 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gp_android_2019.R;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jaredrummler.android.processes.AndroidProcesses;
@@ -24,6 +28,33 @@ import com.jaredrummler.android.processes.models.Stat;
 public class ioAppResult extends AppCompatActivity {
 
 
+    public ArrayList<String> suCommand(String cmd){
+        Process p;
+        try{
+            p = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
+            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            ArrayList<String> ret = new ArrayList<>();
+            String test;
+
+            while((test = bf.readLine()) != null){
+                ret.add(test);
+            }
+
+            os.flush();
+            return ret;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    String filefrag = "/data/data/com.termux/files/usr/bin/filefrag";
+
+    String frag = "find " + "/data/data/com.termux/" + " f -exec /data/data/com.termux/files/usr/bin/filefrag {} \\;";
+    String defrag = "/system/xbin/e4defrag " + "/data/data/com.termux";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +85,50 @@ public class ioAppResult extends AppCompatActivity {
         TextView frag_num = (TextView) findViewById(R.id.frag_file_num);
         TextView frag_per = (TextView) findViewById(R.id.frag_file_per);
         Button defrag_btn = (Button) findViewById(R.id.defrag_launch);
+
+        ArrayList<String> ret = suCommand(frag);
+        Integer file_num = ret.size();
+
+        ArrayList<String> needDefrag = new ArrayList<>();
+
+        for(String str : ret){
+            String tmp = new String(str);
+
+            String num = new String();
+            Integer cnt = str.length() - 1, result = 0;
+            Integer check = 0;
+
+            while(check > 1){
+                if (str.charAt(cnt) == ' ')
+                    check++;
+                cnt --;
+            }
+
+            cnt -= 2;
+            str = str.substring(0, cnt);
+            cnt--;
+
+            while(str.charAt(cnt) != ' '){
+                num += str.charAt(cnt);
+                cnt --;
+            }
+
+            str = str.substring(0, cnt + 1);
+
+            if (num != null) {
+                try {
+                    num = (new StringBuffer(num)).reverse().toString();
+                    result = Integer.parseInt(num);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            if(result > 1){
+                needDefrag.add(str);
+            }
+        }
+
 
         defrag_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
