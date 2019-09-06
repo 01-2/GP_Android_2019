@@ -10,7 +10,9 @@ public class fragManage {
     public String appDataPath;
     public Integer appFileNum;
     public ArrayList<String> appNeedToDefrag;
+    public Double appFragmentedPercentage;
     public Integer appFragmentedFileNum;
+    public Integer defragMentedNum;
 
     public ArrayList<String> suCommand(String cmd){
         Process p;
@@ -36,44 +38,75 @@ public class fragManage {
     }
 
     public ArrayList<String> getFragmentedFiles(ArrayList<String> files){
+        Integer file_num = files.size();
+
         ArrayList<String> needDefrag = new ArrayList<>();
 
         for(String str : files){
-            str = str.substring(0, str.length() - 13);
+            String tmp = new String(str);
 
             String num = new String();
             Integer cnt = str.length() - 1, result = 0;
+            Integer check = 0;
+
+            while(check < 2){
+                if (str.charAt(cnt) == ' ')
+                    check++;
+                cnt --;
+            }
+
+            str = str.substring(0, cnt+1);
 
             while(str.charAt(cnt) != ' '){
                 num += str.charAt(cnt);
                 cnt --;
             }
 
-            cnt --;
-            str = str.substring(0, str.length() - cnt);
+            str = str.substring(0, cnt + 1);
 
-            num = (new StringBuffer(num)).reverse().toString();
-            result = Integer.parseInt(str);
+            if (num != null) {
+                try {
+                    num = (new StringBuffer(num)).reverse().toString();
+                    result = Integer.parseInt(num);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
 
             if(result > 1){
                 needDefrag.add(str);
             }
         }
 
-        return files;
+        return needDefrag;
     }
 
+    public void defragAllFiles(){
+        String defrag = "/system/xbin/e4defrag " + appDataPath;
+        String frag = "find " + appDataPath + " f -exec /system/xbin/filefrag {} \\;";
+
+        defragMentedNum = appFragmentedFileNum;
+        suCommand(defrag);
+
+        ArrayList<String> files = suCommand(frag);
+        appNeedToDefrag = getFragmentedFiles(files);
+        appFragmentedFileNum = appNeedToDefrag.size();
+
+        defragMentedNum -= appFragmentedFileNum;
+        appFragmentedPercentage = Double.valueOf(appFragmentedFileNum) / Double.valueOf(appFileNum);
+    }
 
     fragManage(String path){
         appDataPath = path;
 
-        String frag = "find " + appDataPath + " f -exec /data/data/com.termux/files/usr/bin/filefrag {} \\;";
+        String frag = "find " + appDataPath + " f -exec /system/xbin/filefrag {} \\;";
+        ArrayList<String> files = suCommand(frag);
 
-        ArrayList<String> ret = suCommand(frag);
-        appFileNum = ret.size();
+        appFileNum = files.size();
+        appNeedToDefrag = getFragmentedFiles(files);
+        appFragmentedFileNum = appNeedToDefrag.size();
 
-
-
+        appFragmentedPercentage = Double.valueOf(appFragmentedFileNum) / Double.valueOf(appFileNum);
     }
 
 }

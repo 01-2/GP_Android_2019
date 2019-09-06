@@ -3,11 +3,13 @@ package com.gp_android_2019.io;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,35 +29,6 @@ import com.jaredrummler.android.processes.models.AndroidAppProcess;
 import com.jaredrummler.android.processes.models.Stat;
 
 public class ioAppResult extends AppCompatActivity {
-
-
-    public ArrayList<String> suCommand(String cmd){
-        Process p;
-        try{
-            p = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
-            DataOutputStream os = new DataOutputStream(p.getOutputStream());
-            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            ArrayList<String> ret = new ArrayList<>();
-            String test;
-
-            while((test = bf.readLine()) != null){
-                ret.add(test);
-            }
-
-            os.flush();
-            return ret;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    String filefrag = "/data/data/com.termux/files/usr/bin/filefrag";
-
-    String frag = "find " + "/data/data/com.termux/" + " f -exec /data/data/com.termux/files/usr/bin/filefrag {} \\;";
-    String defrag = "/system/xbin/e4defrag " + "/data/data/com.termux";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,58 +56,25 @@ public class ioAppResult extends AppCompatActivity {
 
 
         // FRAGMENTATION INFORMATION
-        TextView frag_num = (TextView) findViewById(R.id.frag_file_num);
-        TextView frag_per = (TextView) findViewById(R.id.frag_file_per);
+        final TextView frag_num = (TextView) findViewById(R.id.frag_file_num);
+        final TextView frag_per = (TextView) findViewById(R.id.frag_file_per);
         Button defrag_btn = (Button) findViewById(R.id.defrag_launch);
 
-        ArrayList<String> ret = suCommand(frag);
-        Integer file_num = ret.size();
+        final fragManage frag = new fragManage(ddir_name);
 
-        ArrayList<String> needDefrag = new ArrayList<>();
-
-        for(String str : ret){
-            String tmp = new String(str);
-
-            String num = new String();
-            Integer cnt = str.length() - 1, result = 0;
-            Integer check = 0;
-
-            while(check > 1){
-                if (str.charAt(cnt) == ' ')
-                    check++;
-                cnt --;
-            }
-
-            cnt -= 2;
-            str = str.substring(0, cnt);
-            cnt--;
-
-            while(str.charAt(cnt) != ' '){
-                num += str.charAt(cnt);
-                cnt --;
-            }
-
-            str = str.substring(0, cnt + 1);
-
-            if (num != null) {
-                try {
-                    num = (new StringBuffer(num)).reverse().toString();
-                    result = Integer.parseInt(num);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            if(result > 1){
-                needDefrag.add(str);
-            }
-        }
-
+        frag_num.setText(frag.appFragmentedFileNum +  " / " + frag.appFileNum.toString());
+        frag_per.setText(String.format("%.2f", frag.appFragmentedPercentage*100) + "%");
 
         defrag_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+                frag.defragAllFiles();
 
+                Toast t = Toast.makeText(getApplicationContext(), frag.defragMentedNum.toString() + " files defragmented", Toast.LENGTH_LONG);
+                t.show();
+
+                frag_num.setText(frag.appFragmentedFileNum +  " / " + frag.appFileNum.toString());
+                frag_per.setText(String.format("%.2f", frag.appFragmentedPercentage*100) + "%");
             }
         });
 
