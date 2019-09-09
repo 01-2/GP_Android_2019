@@ -13,17 +13,40 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gp_android_2019.R;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jaredrummler.android.processes.AndroidProcesses;
 import com.jaredrummler.android.processes.models.AndroidAppProcess;
 import com.jaredrummler.android.processes.models.Stat;
 
+import org.w3c.dom.Text;
+
 public class ioAppResult extends AppCompatActivity {
 
+    public ArrayList<String> suCommand(String cmd){
+        Process p;
+        try{
+            p = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
+            DataOutputStream os = new DataOutputStream((p.getOutputStream()));
+            BufferedReader bf = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
+            ArrayList<String> ret = new ArrayList<>();
+            String test;
+
+            while((test = bf.readLine()) != null) ret.add(test);
+            os.flush();
+
+            return ret;
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,54 +90,19 @@ public class ioAppResult extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true){
-                    int target_pid = getAppPid(pack_name);
-                    System.out.println(target_pid);
-                    try{
-                        Process su = Runtime.getRuntime().exec("su");
-                        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
-
-                        outputStream.writeBytes("echo " + target_pid
-                                + " > /sys/kernel/debug/tracing/set_ftrace_pid");
-                        outputStream.flush();
-
-                        outputStream.writeBytes(
-                                "echo function > /sys/kernel/debug/tracing/current_tracer");
-                        outputStream.flush();
-
-                        outputStream.writeBytes(
-                                "echo nop > /sys/kernel/debug/tracing/current_tracer");
-                        outputStream.flush();
-
-                        outputStream.writeBytes("echo 1 > /sys/kernel/debug/tracing/tracing_on");
-                        outputStream.flush();
-
-                        try {
-                            su.waitFor();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        outputStream.close();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                        System.out.println("tracing_on_failed");
-                    }
+                    suCommand("echo function > /sys/kernel/debug/tracing/tracing_on");
+                    suCommand("echo nop > /sys/kernel/debug/tracing/current_tracer");
+                    suCommand("echo 1 > /sys/kernel/debug/tracing/tracing_on");
                 }
                 else {
-                    try{
-                        Process su = Runtime.getRuntime().exec("su");
-                        DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
+                    suCommand("echo 0 > /sys/kernel/debug/tracing/tracing_on");
+                    int tpid = getAppPid(pack_name);
+                    System.out.println("TARGET PID : " + tpid);
 
-                        outputStream.writeBytes("echo 0 > /sys/kernel/debug/tracing/tracing_on");
-                        outputStream.flush();
-                        try {
-                            su.waitFor();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        outputStream.close();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                        System.out.println("tracing_off_failed");
+                    ArrayList<String> sh_result = suCommand("cat /sys/kernel/debug/tracing/trace");
+                    System.out.println("LOG SIZE : " + sh_result.size());
+                    for(int i = 0; i < sh_result.size(); i++){
+                        System.out.println(sh_result.get(i));
                     }
                 }
             }
@@ -146,4 +134,14 @@ public class ioAppResult extends AppCompatActivity {
         }
         return target_pid;
     }
+
+    public void settingGraph(){
+        TextView part_vfs = (TextView) findViewById(R.id.g_vfs);
+        TextView part_ext4 = (TextView) findViewById(R.id.g_ext4);
+        TextView part_block = (TextView) findViewById(R.id.g_block);
+        TextView part_driver = (TextView) findViewById(R.id.g_driver);
+    }
+
+
+
 }
