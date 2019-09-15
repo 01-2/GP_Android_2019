@@ -9,7 +9,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginHorizontal="10dp"
         android:background="#000000"
-        android:padding="2dp"
+        android:padding="3dp"
         android:stretchColumns="*">
         <TableRow
             android:background="#FFFFFF">
@@ -17,7 +17,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="APPLICATION INFO"
-                android:textSize="20dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:layout_span="2"/>
         </TableRow>
@@ -28,6 +29,7 @@
                 android:layout_height="match_parent"
                 android:text="APP"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:layout_weight="1"/>
             <TextView
@@ -45,6 +47,7 @@
                 android:layout_height="match_parent"
                 android:text="PACKAGE"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:layout_weight="1"/>
             <TextView
@@ -62,6 +65,7 @@
                 android:layout_height="match_parent"
                 android:text="SOURCE"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:layout_weight="1"/>
             <TextView
@@ -79,6 +83,7 @@
                 android:layout_height="match_parent"
                 android:text="DATA"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:layout_weight="1"/>
             <TextView
@@ -97,7 +102,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginHorizontal="10dp"
         android:background="#000000"
-        android:padding="2dp"
+        android:padding="3dp"
         android:stretchColumns="*">
         <TableRow
             android:background="#FFFFFF">
@@ -106,6 +111,7 @@
                 android:layout_height="match_parent"
                 android:text="I/O TRACE"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <Switch
                 android:id="@+id/trace_switch"
@@ -126,21 +132,166 @@
         </TableRow>
     </TableLayout>
     <TableLayout
-        android:id="@+id/trace_result_graph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginHorizontal="10dp"
         android:background="#000000"
-        android:padding="2dp"
+        android:padding="3dp"
         android:stretchColumns="*">
         <TableRow
             android:background="#FFFFFF">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="GRAPH AREA"
-                android:textSize="20dp"
+                android:text="INDEX"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_weight="4"/>
+        </TableRow>
+        <TableRow
+            android:background="#FFFFFF">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4E81C0"
+                android:text="VFS"
+                android:textSize="15dp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#C14F4B"
+                android:text="EXT4"
+                android:textSize="15dp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9ABB4F"
+                android:text="BLOCK"
+                android:textSize="15dp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8063A4"
+                android:text="DRIVER"
+                android:textSize="15dp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+        </TableRow>
+    </TableLayout>
+    <TableLayout
+        android:id="@+id/trace_result_graph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="#000000"
+        android:padding="3dp"
+        android:stretchColumns="*">
+        <TableRow
+            android:background="#FFFFFF">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                android:text="R"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_vfs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4E81C0"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center" />
+            <TextView
+                android:id="@+id/g_ext4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#C14F4B"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_block"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9ABB4F"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_driver"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8063A4"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+        </TableRow>
+    </TableLayout>
+    <TableLayout
+        android:id="@+id/trace_w_graph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:background="#000000"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingBottom="3dp"
+        android:stretchColumns="*">
+        <TableRow
+            android:background="#FFFFFF">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                android:text="W"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_w_vfs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4E81C0"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_w_ext4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#C14F4B"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_w_block"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9ABB4F"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/g_w_driver"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8063A4"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
                 android:gravity="center"/>
         </TableRow>
     </TableLayout>
@@ -151,7 +302,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginHorizontal="10dp"
         android:background="#000000"
-        android:padding="2dp"
+        android:padding="3dp"
         android:stretchColumns="*">
         <TableRow
             android:background="#FFFFFF">
@@ -167,6 +318,7 @@
                 android:layout_margin="2dp"
                 android:text="R"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
@@ -174,6 +326,7 @@
                 android:layout_margin="2dp"
                 android:text="W"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
         </TableRow>
         <TableRow
@@ -184,20 +337,21 @@
                 android:layout_margin="2dp"
                 android:text="VFS"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="13 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="41 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
         </TableRow>
         <TableRow
@@ -208,20 +362,21 @@
                 android:layout_margin="2dp"
                 android:text="EXT4"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="78 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="56 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
         </TableRow>
         <TableRow
@@ -232,20 +387,21 @@
                 android:layout_margin="2dp"
                 android:text="BLOCK"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="53 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="94 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
         </TableRow>
         <TableRow
@@ -256,20 +412,21 @@
                 android:layout_margin="2dp"
                 android:text="DRIVER"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="102 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
-                android:textSize="20dp"
+                android:text="147 us"
+                android:textSize="15dp"
                 android:gravity="center"/>
         </TableRow>
     </TableLayout>
@@ -280,7 +437,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="5dp"
         android:background="#000000"
-        android:padding="2dp"
+        android:padding="3dp"
         android:stretchColumns="*">
         <TableRow
             android:background="#FFFFFF">
@@ -289,7 +446,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="00 / 00"
+                android:text="7 / 286"
                 android:textSize="20dp"
                 android:gravity="center"/>
             <TextView
@@ -297,7 +454,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="000%"
+                android:text="2%"
                 android:textSize="20dp"
                 android:gravity="center"/>
             <Button

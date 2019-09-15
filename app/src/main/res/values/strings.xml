@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GP_Android_2019</string>
+    <string name="app_name">ANDROID I/O BENCHMARK</string>
     <string name="loading">로딩중</string>
     <string name="menu_download">다운로드</string>
     <string name="menu_all">전체</string>
@@ -17,6 +17,4 @@
     <string name="db_btn">DB</string>
     <string name="all_btn">ALL</string>
     <string name="bench_btn">GO</string>
-
-
 </resources>
