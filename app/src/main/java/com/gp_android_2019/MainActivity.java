@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.gp_android_2019.R;
 import com.gp_android_2019.io.ioActivity;
+import com.gp_android_2019.bench.BenchActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         benchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), benchActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BenchActivity.class);
                 startActivity(intent);
             }
         });

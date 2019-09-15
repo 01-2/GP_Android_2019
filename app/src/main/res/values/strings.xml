@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">ANDROID I/O BENCHMARK</string>
-    <string name="loading" >로딩중</string>
-    <string name="menu_download" >다운로드</string>
-    <string name="menu_all" >전체</string>
+    <string name="loading">로딩중</string>
+    <string name="menu_download">다운로드</string>
+    <string name="menu_all">전체</string>
+
+    <string name="title_rw">READ / WRITE</string>
+    <string name="title_db">DB TRANSACTION</string>
+    <string name="seq_read">Sequential Read</string>
+    <string name="seq_write">Sequential Write</string>
+    <string name="ran_read">Random Read</string>
+    <string name="ran_write">Random Write</string>
+    <string name="db_insert">INSERT</string>
+    <string name="db_update">UPDATE</string>
+    <string name="db_delete">DELETE</string>
+    <string name="rw_btn">R/W</string>
+    <string name="db_btn">DB</string>
+    <string name="all_btn">ALL</string>
+    <string name="bench_btn">GO</string>
 </resources>
