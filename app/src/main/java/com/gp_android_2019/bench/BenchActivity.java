@@ -25,9 +25,9 @@ import com.gp_android_2019.R;
 import java.util.ArrayList;
 
 public class BenchActivity extends AppCompatActivity {
-    private boolean[] rwCheck;
-    private boolean[] dbCheck;
-    private boolean isEmpty = true;
+    static public boolean[] rwCheck;
+    static public boolean[] dbCheck;
+    static public boolean isEmpty = true;
 
     FragmentManager fm;
     FragmentTransaction ft;
@@ -36,15 +36,15 @@ public class BenchActivity extends AppCompatActivity {
     TypeFragment fType;
     SetFragment fSetting;
 
-    private String path;
-    private String type;
-    private String direct;
-    private String bs;
-    private String io_size;
-    private String num_jobs;
-    private String runtime;
+    static public String path;
+    static public String type;
+    static public String direct;
+    static public String bs;
+    static public String io_size;
+    static public String num_jobs;
+    static public String runtime;
 
-    private int numOfTrans;
+    static public int numOfTrans;
 
     private ArrayList<String> result_rw;
     private ArrayList<String> result_db;
@@ -109,7 +109,7 @@ public class BenchActivity extends AppCompatActivity {
     }
 
     public void benchmark(View v) {
-        CheckedBoxes();
+        fType.CheckedBoxes();
 
         if (isEmpty) {
             Toast.makeText(getApplicationContext(), "Select at least one Type", Toast.LENGTH_SHORT).show();
@@ -117,81 +117,10 @@ public class BenchActivity extends AppCompatActivity {
         }
         isEmpty = true;
 
-        makeParameter();
+        fSetting.makeParameter();
 
         CheckTypesTask task = new CheckTypesTask(BenchActivity.this);
         task.execute();
-    }
-
-    private void makeParameter() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View view = (View) inflater.inflate( R.layout.fragment_set, null );
-
-        EditText path_ed = (EditText)view.findViewById(R.id.ed_path);
-        path = path_ed.getText().toString();
-
-        EditText bs_ed = (EditText)view.findViewById(R.id.ed_bs);
-        Spinner bs_spin = (Spinner)view.findViewById(R.id.spin_unit_bs);
-        bs = bs_ed.getText().toString() + bs_spin.getSelectedItem().toString();
-
-        EditText io_size_ed = (EditText)view.findViewById(R.id.ed_io_size);
-        Spinner io_size_spin = (Spinner)view.findViewById(R.id.spin_unit_io_size);
-        io_size = io_size_ed.getText().toString() + io_size_spin.getSelectedItem().toString();
-
-        EditText thr_ed = (EditText)view.findViewById(R.id.ed_thread);
-        num_jobs = thr_ed.getText().toString();
-
-        EditText run_ed = (EditText)view.findViewById(R.id.ed_run);
-        runtime = run_ed.getText().toString();
-
-        Spinner direct_spin = (Spinner)view.findViewById(R.id.spin_direct);
-        direct = String.valueOf(direct_spin.getSelectedItemPosition());
-
-        EditText trans_ed = (EditText)view.findViewById(R.id.ed_trans);
-        numOfTrans = Integer.valueOf(trans_ed.getText().toString());
-    }
-
-    private void CheckedBoxes() {
-        ArrayList<CheckBox> boxes = new ArrayList<>();
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View view = (View) inflater.inflate( R.layout.fragment_type, null );
-
-        boxes.add((CheckBox)view.findViewById(R.id.chk_seq_read));
-        boxes.add((CheckBox)view.findViewById(R.id.chk_seq_write));
-        boxes.add((CheckBox)view.findViewById(R.id.chk_ran_read));
-        boxes.add((CheckBox)view.findViewById(R.id.chk_ran_write));
-
-        int cnt_CheckBox = boxes.size();
-
-        rwCheck = new boolean[cnt_CheckBox];
-        for (int i=0; i < rwCheck.length; i++) {
-            if (boxes.get(i).isChecked()) {
-                rwCheck[i] = true;
-                isEmpty = false;
-            }
-            else {
-                rwCheck[i] = false;
-            }
-        }
-
-        boxes = new ArrayList<>();
-
-        boxes.add((CheckBox)view.findViewById(R.id.chk_insert));
-        boxes.add((CheckBox)view.findViewById(R.id.chk_update));
-        boxes.add((CheckBox)view.findViewById(R.id.chk_delete));
-
-        cnt_CheckBox = boxes.size();
-        dbCheck = new boolean[cnt_CheckBox];
-        for (int i=0; i < dbCheck.length; i++) {
-            if (boxes.get(i).isChecked()) {
-                dbCheck[i] = true;
-                isEmpty = false;
-            }
-            else {
-                dbCheck[i] = false;
-            }
-        }
     }
 
     private class CheckTypesTask extends AsyncTask<Void, String, Void> {
