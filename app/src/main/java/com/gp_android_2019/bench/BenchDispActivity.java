@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,8 +31,12 @@ public class BenchDispActivity extends AppCompatActivity {
         if (!tmp_res_rw.isEmpty()) {
             for (int i = 0; i < tmp_res_rw.size(); i++) {
                 String tmp = tmp_res_rw.get(i);
-                res_id_rw.add(Integer.valueOf(tmp.substring(0, 1)));
-                result_rw.add(Integer.valueOf(tmp.substring(1)));
+                try {
+                    res_id_rw.add(Integer.valueOf(tmp.substring(0, 1)));
+                    result_rw.add(Integer.valueOf(tmp.substring(1)));
+                }catch(Exception e){
+                    Log.d("hida", "hida");
+                }
             }
             ArrayList<Float> trans_rw = iTransform(result_rw);
             display_rw(trans_rw);
