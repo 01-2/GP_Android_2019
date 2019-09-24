@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,7 @@ import com.jaredrummler.android.processes.models.Stat;
 import org.w3c.dom.Text;
 
 public class ioAppResult extends AppCompatActivity {
+    layer l = new layer(), s1 = new layer(), s2 = new layer();
 
     public ArrayList<String> suCommand(String cmd){
         Process p;
@@ -63,7 +68,9 @@ public class ioAppResult extends AppCompatActivity {
         final String sdir_name = prevIntent.getStringExtra("SDIR_NAME");
         final String ddir_name = prevIntent.getStringExtra("DDIR_NAME");
 
-        Button appLaunchBtn = (Button) findViewById(R.id.app_launch);
+        Button save1Btn = (Button) findViewById(R.id.save1);
+        Button save2Btn =  (Button) findViewById(R.id.save2);
+        Button compareBtn = (Button) findViewById(R.id.compare);
         Switch traceSwitch = (Switch) findViewById(R.id.trace_switch);
 
         TextView app_aview = (TextView) findViewById(R.id.app_textview);
@@ -105,32 +112,156 @@ public class ioAppResult extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true){
-                    suCommand("echo function > /sys/kernel/debug/tracing/tracing_on");
+                    suCommand("echo function > /sys/kernel/debug/tracing/current_tracer");
                     suCommand("echo nop > /sys/kernel/debug/tracing/current_tracer");
                     suCommand("echo 1 > /sys/kernel/debug/tracing/tracing_on");
+
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(pack_name);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
                 else {
                     suCommand("echo 0 > /sys/kernel/debug/tracing/tracing_on");
                     int tpid = getAppPid(pack_name);
                     System.out.println("TARGET PID : " + tpid);
 
-                    ArrayList<String> sh_result = suCommand("cat /sys/kernel/debug/tracing/trace");
-                    System.out.println("LOG SIZE : " + sh_result.size());
-                    for(int i = 0; i < sh_result.size(); i++){
-                        System.out.println(sh_result.get(i));
-                    }
+
+                    parseLog p = new parseLog();
+                    l = p.parseAll(tpid);
+
+                    drawGraph();
+                    suCommand("kill " + tpid);
                 }
             }
         });
 
-        appLaunchBtn.setOnClickListener(new Button.OnClickListener() {
+        save1Btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = getPackageManager().getLaunchIntentForPackage(pack_name);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                Toast t;
+                if(l.pid == 0) {
+                    t = Toast.makeText(getApplicationContext(), "Run application first", Toast.LENGTH_LONG);
+                    t.show();
+                }else {
+                    s1 = new layer(l);
+                    l.clear();
+
+                    t = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG);
+                    t.show();
+                }
             }
         });
+        save2Btn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast t;
+                if(l.pid == 0) {
+                    t = Toast.makeText(getApplicationContext(), "Run application first", Toast.LENGTH_LONG);
+                    t.show();
+                }else {
+                    s2 = new layer(l);
+                    l.clear();
+
+                    t = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG);
+                    t.show();
+                }
+            }
+        });
+        compareBtn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast t = null;
+                if (s1.pid == 0) {
+                    t = Toast.makeText(getApplicationContext(), "Save slot 1 empty. You should save result first", Toast.LENGTH_LONG);
+                    t.show();
+                } else if (s2.pid == 0) {
+                    t = Toast.makeText(getApplicationContext(), "Save slot 2 empty. You should save result first", Toast.LENGTH_LONG);
+                    t.show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), ioCompareActivity.class);
+                    ioCompare save = new ioCompare(s1, s2);
+
+                    intent.putExtra("save", save);
+                    startActivity(intent);
+                }
+            }
+
+        });
+
+    }
+
+    public void drawGraph(){
+        TextView vfs_r = (TextView)findViewById(R.id.vfs_r);
+        TextView vfs_w = (TextView)findViewById(R.id.vfs_w);
+        TextView ext4_r = (TextView)findViewById(R.id.ext4_r);
+        TextView ext4_w = (TextView)findViewById(R.id.ext4_w);
+        TextView block_r = (TextView)findViewById(R.id.block_r);
+        TextView block_w = (TextView)findViewById(R.id.block_w);
+        TextView driver_r = (TextView)findViewById(R.id.driver_r);
+        TextView driver_w = (TextView)findViewById(R.id.driver_w);
+
+        TextView g_vfs_r = (TextView)findViewById(R.id.g_vfs);
+        TextView g_vfs_w = (TextView)findViewById(R.id.g_w_vfs);
+        TextView g_ext4_r = (TextView)findViewById(R.id.g_ext4);
+        TextView g_ext4_w = (TextView)findViewById(R.id.g_w_ext4);
+        TextView g_block_r = (TextView)findViewById(R.id.g_block);
+        TextView g_block_w = (TextView)findViewById(R.id.g_w_block);
+        TextView g_driver_r = (TextView)findViewById(R.id.g_driver);
+        TextView g_driver_w = (TextView)findViewById(R.id.g_w_driver);
+
+        TableRow tr = (TableRow) findViewById(R.id.row_r);
+        TableRow tw = (TableRow) findViewById(R.id.row_w);
+
+        // set text
+        vfs_r.setText(Integer.toString(l.vfs_r) + "us");
+        vfs_w.setText(Integer.toString(l.vfs_w) + "us");
+        ext4_r.setText(Integer.toString(l.ext_r) + "us");
+        ext4_w.setText(Integer.toString(l.ext_w) + "us");
+        block_r.setText(Integer.toString(l.block_r) + "us");
+        block_w.setText(Integer.toString(l.block_w) + "us");
+        driver_r.setText(Integer.toString(l.driver_r) + "us");
+        driver_w.setText(Integer.toString(l.driver_w) + "us");
+
+        float div_r = l.vfs_r + l.driver_r + l.block_r + l.ext_r;
+        float div_w = l.vfs_w + l.driver_w + l.block_w + l.ext_w;
+
+        float ext_rr = 0.0001f, vfs_rr = 0.0001f, block_rr = 0.0001f, driver_rr = 0.0001f;
+        float ext_ww = 0.0001f, vfs_ww = 0.0001f, block_ww = 0.0001f, driver_ww = 0.0001f;
+
+        if(l.vfs_r != 0.0f)
+            vfs_rr = (float)l.vfs_r;
+        if(l.ext_r != 0.0f)
+            ext_rr = (float)l.ext_r;
+        if(l.block_r != 0.0f)
+            block_rr = (float)l.block_r;
+        if(l.driver_r != 0.0f)
+            driver_rr = (float)l.driver_r;
+
+        if(l.vfs_w != 0.0f)
+            vfs_ww = (float)l.vfs_w;
+        if(l.ext_w != 0.0f)
+            ext_ww = (float)l.ext_w;
+        if(l.block_w != 0.0f)
+            block_ww = (float)l.block_w;
+        if(l.driver_w != 0.0f)
+            driver_ww = (float)l.driver_w;
+
+
+        //draw r graph
+        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f));
+        tw.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f));
+
+        g_vfs_r.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, vfs_rr/div_r));
+        g_ext4_r.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT, ext_rr/div_r));
+        g_block_r.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, block_rr/div_r));
+        g_driver_r.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, driver_rr/div_r));
+
+        //draw w graph
+        g_vfs_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, vfs_ww/div_w));
+        g_ext4_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, ext_ww/div_w));
+        g_block_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, block_ww/div_w));
+        g_driver_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, driver_ww/div_w));
+
     }
 
     public int getAppPid(String p_name){
@@ -155,6 +286,7 @@ public class ioAppResult extends AppCompatActivity {
         TextView part_ext4 = (TextView) findViewById(R.id.g_ext4);
         TextView part_block = (TextView) findViewById(R.id.g_block);
         TextView part_driver = (TextView) findViewById(R.id.g_driver);
+
     }
 
 

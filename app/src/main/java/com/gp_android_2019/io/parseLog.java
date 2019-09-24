@@ -67,32 +67,36 @@ public class parseLog {
     }
 
 
-
     public layer parseAll(Integer pid){
         String reg = ".*\\:.*\\: ";
+        String reg2 = ".*-";
         Pattern p = Pattern.compile(reg);
-
+        Pattern p2 = Pattern.compile(reg2);
         layer ret = new layer(pid);
 
-        ArrayList<Integer> block_rs = new ArrayList();
-        ArrayList<Integer> block_ws = new ArrayList();
-        ArrayList<Integer> block_re = new ArrayList();
-        ArrayList<Integer> block_we = new ArrayList();
+        ArrayList<Long> block_rs = new ArrayList();
+        ArrayList<Long> block_ws = new ArrayList();
+        ArrayList<Long> block_re = new ArrayList();
+        ArrayList<Long> block_we = new ArrayList();
 
-        ArrayList<Integer> device_rs = new ArrayList();
-        ArrayList<Integer> device_ws = new ArrayList();
-        ArrayList<Integer> device_re = new ArrayList();
-        ArrayList<Integer> device_we = new ArrayList();
+        ArrayList<Long> device_rs = new ArrayList();
+        ArrayList<Long> device_ws = new ArrayList();
+        ArrayList<Long> device_re = new ArrayList();
+        ArrayList<Long> device_we = new ArrayList();
 
         for(String str: log){
-            if(str.indexOf("-") == -1) continue; // pid not found
+            int flag = str.indexOf(pid.toString());
+            Matcher m = p2.matcher(str);
+            if(!m.find())
+                continue;
 
-            int pos = str.indexOf("-");
-            int space = str.indexOf(" ");
+            int pos = m.group().length();
+            str = str.substring(pos, str.length());
+            int space = str.indexOf(" ");;
 
-            if(pid != Integer.parseInt(str.substring(pos + 1, space))) continue;
+            if(pid != Integer.parseInt(str.substring(0, space))) continue;
 
-            Matcher m = p.matcher(str);
+            m = p.matcher(str);
             if(m.find()){
                 pos = m.group().length();
                 str = str.substring(pos, str.length());
@@ -106,7 +110,7 @@ public class parseLog {
 
                 if(mode.equals("DEVICE")){
                     String sORe = str.substring(pos + 1, pos + 2);
-                    Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
+                    Long time_val = Long.parseLong(str.substring(pos + 3, str.length()));
                     if(rw.equals("R")){
                         if(sORe.equals("S")){
                             device_rs.add(time_val);
@@ -115,17 +119,17 @@ public class parseLog {
                             device_re.add(time_val);
                         }
                     }
-                    else if(rw.equals("W")){
-                        if(sORe.equals("S")){
+                    else if(rw.equals("W")) {
+                        if (sORe.equals("S")) {
                             device_ws.add(time_val);
-                        }
-                        else if(sORe.equals("E")){
+                        } else if (sORe.equals("E")) {
                             device_we.add(time_val);
                         }
                     }
+
                 } else if (mode.equals("BLOCK")) {
                     String sORe = str.substring(pos + 1, pos + 2);
-                    Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
+                    Long time_val = Long.parseLong(str.substring(pos + 3, str.length()));
                     if(rw.equals("R")){
                         if(sORe.equals("S")){
                             block_rs.add(time_val);
@@ -142,9 +146,10 @@ public class parseLog {
                             block_we.add(time_val);
                         }
                     }
-                } else {
-                    Integer amount = Integer.parseInt(str.substring(pos + 1, str.length()));
-                    if (mode.equals("EXT4") && rw.equals("R"))
+                }
+                else if (flag != -1){
+                    int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
+                    if(mode.equals("EXT4") && rw.equals("R"))
                         ret.ext_r += amount;
                     else if (mode.equals("EXT4") && rw.equals("W"))
                         ret.ext_w += amount;
@@ -218,8 +223,7 @@ public class parseLog {
     }
 
     parseLog(){
-        log = suCommand("cat /data/data/com.gp_android_2019/a.txt");
-        //log = suCommand("cat /sys/kernel/debug/tracing/trace");
+        log = suCommand("cat /sys/kernel/debug/tracing/trace");
 
         for(Iterator<String> it = log.iterator(); it.hasNext();){
             String str = it.next();
