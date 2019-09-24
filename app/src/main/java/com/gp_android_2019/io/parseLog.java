@@ -1,11 +1,15 @@
 package com.gp_android_2019.io;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class parseLog {
     ArrayList<String> log;
@@ -60,6 +64,63 @@ public class parseLog {
         return result;
     }
 
+
+
+    public layer parseAll(Integer pid){
+        String reg = ".*\\:.*\\: ";
+        Pattern p = Pattern.compile(reg);
+
+        layer ret = new layer(pid);
+
+        for(String str: log){
+            if(str.indexOf("-") == -1) continue; // pid not found
+
+            int pos = str.indexOf("-");
+            int space = str.indexOf(" ");
+
+            if(pid != Integer.parseInt(str.substring(pos + 1, space))) continue;
+
+            Matcher m = p.matcher(str);
+            if(m.find()){
+                pos = m.group().length();
+                str = str.substring(pos, str.length());
+
+                pos = str.indexOf("/");
+                String mode = str.substring(1, pos);
+
+                pos += 1;
+
+                String rw = str.substring(pos, pos + 1);
+
+                pos = str.indexOf(" ");
+                int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
+
+                if(mode.equals("EXT4") && rw.equals("R"))
+                    ret.ext_r += amount;
+                else if (mode.equals("EXT4") && rw.equals("W"))
+                    ret.ext_w += amount;
+                else if (mode.equals("VFS") && rw.equals("R"))
+                    ret.vfs_r += amount;
+                else if (mode.equals("VFS") && rw.equals("W"))
+                    ret.vfs_w += amount;
+                else if (mode.equals("BLOCK") && rw.equals("R"))
+                    ret.block_r += amount;
+                else if (mode.equals("BLOCK") && rw.equals("W"))
+                    ret.block_w += amount;
+                else if (mode.equals("DRIVER") && rw.equals("R"))
+                    ret.driver_r += amount;
+                else if (mode.equals("DRIVer") && rw.equals("W"))
+                    ret.driver_w += amount;
+
+            }
+
+        }
+
+        return ret;
+    }
+
+
+
     public ArrayList<String> suCommand(String cmd){
         Process p;
         try{
@@ -84,8 +145,8 @@ public class parseLog {
     }
 
     parseLog(){
-        // log = suCommand("cat /data/data/com.termux/files/home/test.txt");
-        log = suCommand("cat /sys/kernel/debug/tracing/trace");
+        log = suCommand("cat /data/data/com.gp_android_2019/a.txt");
+        //log = suCommand("cat /sys/kernel/debug/tracing/trace");
 
         for(Iterator<String> it = log.iterator(); it.hasNext();){
             String str = it.next();

@@ -103,7 +103,7 @@ public class fragManage {
         ArrayList<String> files = suCommand(frag);
 
         parseLog p = new parseLog();
-        ArrayList<Integer> tmp = p.parse(5072);
+        p.parseAll(3569);
 
         appFileNum = files.size();
         appNeedToDefrag = getFragmentedFiles(files);
