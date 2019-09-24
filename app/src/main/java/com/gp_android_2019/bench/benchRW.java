@@ -40,7 +40,7 @@ public class benchRW {
                     "--bs=" + bs + " " + "--size=" + io_size + " " +
                     "--numjobs=" + num_jobs + " " + "--runtime=" + runtime;
             process = run.exec(cmd);
-
+            System.out.print(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = br.readLine()) != null) {

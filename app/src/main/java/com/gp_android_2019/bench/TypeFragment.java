@@ -1,6 +1,7 @@
 package com.gp_android_2019.bench;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import android.app.Fragment;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.gp_android_2019.R;
 
@@ -53,6 +53,7 @@ public class TypeFragment extends Fragment {
                 checkALL();
             }
         });
+
         return view;
     }
 
@@ -138,6 +139,45 @@ public class TypeFragment extends Fragment {
         else {
             for (int i=0; i< cnt_CheckBox; i++) {
                 boxes.get(i).setChecked(true);
+            }
+        }
+    }
+
+    public void CheckedBoxes() {
+        ArrayList<CheckBox> boxes = new ArrayList<>();
+
+        boxes.add((CheckBox)view.findViewById(R.id.chk_seq_read));
+        boxes.add((CheckBox)view.findViewById(R.id.chk_seq_write));
+        boxes.add((CheckBox)view.findViewById(R.id.chk_ran_read));
+        boxes.add((CheckBox)view.findViewById(R.id.chk_ran_write));
+
+        int cnt_CheckBox = boxes.size();
+        BenchActivity.rwCheck = new boolean[cnt_CheckBox];
+        for (int i=0; i < BenchActivity.rwCheck.length; i++) {
+            if (boxes.get(i).isChecked()) {
+                BenchActivity.rwCheck[i] = true;
+                BenchActivity.isEmpty = false;
+            }
+            else {
+                BenchActivity.rwCheck[i] = false;
+            }
+        }
+
+        boxes = new ArrayList<>();
+
+        boxes.add((CheckBox)view.findViewById(R.id.chk_insert));
+        boxes.add((CheckBox)view.findViewById(R.id.chk_update));
+        boxes.add((CheckBox)view.findViewById(R.id.chk_delete));
+
+        cnt_CheckBox = boxes.size();
+        BenchActivity.dbCheck = new boolean[cnt_CheckBox];
+        for (int i=0; i < BenchActivity.dbCheck.length; i++) {
+            if (boxes.get(i).isChecked()) {
+                BenchActivity.dbCheck[i] = true;
+                BenchActivity.isEmpty = false;
+            }
+            else {
+                BenchActivity.dbCheck[i] = false;
             }
         }
     }
