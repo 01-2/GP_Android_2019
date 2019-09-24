@@ -67,7 +67,6 @@ public class parseLog {
     }
 
 
-
     public layer parseAll(Integer pid){
         String reg = ".*\\:.*\\: ";
         String reg2 = ".*-";
@@ -75,10 +74,15 @@ public class parseLog {
         Pattern p2 = Pattern.compile(reg2);
         layer ret = new layer(pid);
 
-        ArrayList<Integer> device_rs = new ArrayList();
-        ArrayList<Integer> device_ws = new ArrayList();
-        ArrayList<Integer> device_re = new ArrayList();
-        ArrayList<Integer> device_we = new ArrayList();
+        ArrayList<Long> block_rs = new ArrayList();
+        ArrayList<Long> block_ws = new ArrayList();
+        ArrayList<Long> block_re = new ArrayList();
+        ArrayList<Long> block_we = new ArrayList();
+
+        ArrayList<Long> device_rs = new ArrayList();
+        ArrayList<Long> device_ws = new ArrayList();
+        ArrayList<Long> device_re = new ArrayList();
+        ArrayList<Long> device_we = new ArrayList();
 
         for(String str: log){
             int flag = str.indexOf(pid.toString());
@@ -106,7 +110,7 @@ public class parseLog {
 
                 if(mode.equals("DEVICE")){
                     String sORe = str.substring(pos + 1, pos + 2);
-                    Integer time_val = Integer.parseInt(str.substring(pos + 3, str.length()));
+                    Long time_val = Long.parseLong(str.substring(pos + 3, str.length()));
                     if(rw.equals("R")){
                         if(sORe.equals("S")){
                             device_rs.add(time_val);
@@ -115,12 +119,31 @@ public class parseLog {
                             device_re.add(time_val);
                         }
                     }
-                    else if(rw.equals("W")){
-                        if(sORe.equals("S")){
+                    else if(rw.equals("W")) {
+                        if (sORe.equals("S")) {
                             device_ws.add(time_val);
+                        } else if (sORe.equals("E")) {
+                            device_we.add(time_val);
+                        }
+                    }
+
+                } else if (mode.equals("BLOCK")) {
+                    String sORe = str.substring(pos + 1, pos + 2);
+                    Long time_val = Long.parseLong(str.substring(pos + 3, str.length()));
+                    if(rw.equals("R")){
+                        if(sORe.equals("S")){
+                            block_rs.add(time_val);
                         }
                         else if(sORe.equals("E")){
-                            device_we.add(time_val);
+                            block_re.add(time_val);
+                        }
+                    }
+                    else if(rw.equals("W")){
+                        if(sORe.equals("S")){
+                            block_ws.add(time_val);
+                        }
+                        else if(sORe.equals("E")){
+                            block_we.add(time_val);
                         }
                     }
                 }
@@ -134,10 +157,6 @@ public class parseLog {
                         ret.vfs_r += amount;
                     else if (mode.equals("VFS") && rw.equals("W"))
                         ret.vfs_w += amount;
-                    else if (mode.equals("BLOCK") && rw.equals("R"))
-                        ret.block_r += amount;
-                    else if (mode.equals("BLOCK") && rw.equals("W"))
-                        ret.block_w += amount;
                 }
             }
         }
@@ -158,6 +177,23 @@ public class parseLog {
 
         for(int i = 0; i < w_index; i++)
             ret.driver_w += Math.abs((device_we.get(i) - device_ws.get(i)));
+
+        // BLOCK
+        if(block_rs.size() > block_re.size())
+            r_index = block_re.size();
+        else
+            r_index = block_rs.size();
+
+        if(block_ws.size() > block_we.size())
+            w_index = block_we.size();
+        else
+            w_index = block_ws.size();
+
+        for(int i = 0; i < r_index; i++)
+            ret.driver_r += Math.abs((block_re.get(i) - block_rs.get(i)));
+
+        for(int i = 0; i < w_index; i++)
+            ret.driver_w += Math.abs((block_we.get(i) - block_ws.get(i)));
 
         return ret;
     }
