@@ -72,6 +72,8 @@ public class BenchDispActivity extends AppCompatActivity {
 
                     LinearLayout layout_sr = (LinearLayout)findViewById(R.id.layout_seq_read);
                     layout_sr.setVisibility(View.VISIBLE);
+                    layout_sr = (LinearLayout)findViewById(R.id.layout_bar_seq_read);
+                    layout_sr.setVisibility(View.VISIBLE);
                     break;
                 case 1:
                     TextView sw = findViewById(R.id.bar_seq_write);
@@ -80,6 +82,8 @@ public class BenchDispActivity extends AppCompatActivity {
                     sw.setText(result_rw.get(i) + " KB/s");
 
                     LinearLayout layout_sw = (LinearLayout)findViewById(R.id.layout_seq_write);
+                    layout_sw.setVisibility(View.VISIBLE);
+                    layout_sw = (LinearLayout)findViewById(R.id.layout_bar_seq_write);
                     layout_sw.setVisibility(View.VISIBLE);
                     break;
                 case 2:
@@ -90,6 +94,8 @@ public class BenchDispActivity extends AppCompatActivity {
 
                     LinearLayout layout_rr = (LinearLayout)findViewById(R.id.layout_ran_read);
                     layout_rr.setVisibility(View.VISIBLE);
+                    layout_rr = (LinearLayout)findViewById(R.id.layout_bar_ran_read);
+                    layout_rr.setVisibility(View.VISIBLE);
                     break;
                 case 3:
                     TextView rw = findViewById(R.id.bar_ran_write);
@@ -98,6 +104,8 @@ public class BenchDispActivity extends AppCompatActivity {
                     rw.setText(result_rw.get(i) + " KB/s");
 
                     LinearLayout layout_rw = (LinearLayout)findViewById(R.id.layout_ran_write);
+                    layout_rw.setVisibility(View.VISIBLE);
+                    layout_rw = (LinearLayout)findViewById(R.id.layout_bar_ran_write);
                     layout_rw.setVisibility(View.VISIBLE);
                     break;
                 default:
@@ -117,6 +125,8 @@ public class BenchDispActivity extends AppCompatActivity {
 
                     LinearLayout layout_ins = (LinearLayout)findViewById(R.id.layout_insert);
                     layout_ins.setVisibility(View.VISIBLE);
+                    layout_ins = (LinearLayout)findViewById(R.id.layout_bar_insert);
+                    layout_ins.setVisibility(View.VISIBLE);
                     break;
                 case 1:
                     TextView tv_upd = findViewById(R.id.bar_update);
@@ -126,6 +136,8 @@ public class BenchDispActivity extends AppCompatActivity {
 
                     LinearLayout layout_upd = (LinearLayout)findViewById(R.id.layout_update);
                     layout_upd.setVisibility(View.VISIBLE);
+                    layout_upd = (LinearLayout)findViewById(R.id.layout_bar_update);
+                    layout_upd.setVisibility(View.VISIBLE);
                     break;
                 case 2:
                     TextView tv_del = findViewById(R.id.bar_delete);
@@ -134,6 +146,8 @@ public class BenchDispActivity extends AppCompatActivity {
                     tv_del.setText(result_db.get(i) + " Trans/s");
 
                     LinearLayout layout_del = (LinearLayout)findViewById(R.id.layout_delete);
+                    layout_del.setVisibility(View.VISIBLE);
+                    layout_del = (LinearLayout)findViewById(R.id.layout_bar_delete);
                     layout_del.setVisibility(View.VISIBLE);
                     break;
                 default:

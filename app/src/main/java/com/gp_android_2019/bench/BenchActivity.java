@@ -65,8 +65,16 @@ public class BenchActivity extends AppCompatActivity {
         fSetting = new SetFragment();
 
         fm = getFragmentManager();
-        ft = fm.beginTransaction();
 
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame_layout, fType);
+        ft.commit();
+
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame_layout, fSetting);
+        ft.commit();
+
+        ft = fm.beginTransaction();
         ft.replace(R.id.frame_layout, fBench);
         ft.commit();
 
