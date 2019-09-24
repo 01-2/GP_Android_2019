@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class benchRW {
-    private String target_path = "tmp";
+    private String target_path;
     private String type;
     private String direct;
     private String bs;
@@ -16,7 +16,8 @@ public class benchRW {
 
     private String res = "";
 
-    public benchRW (String type, String direct, String bs, String io_size, String num_jobs, String runtime) {
+    public benchRW (String path, String type, String direct, String bs, String io_size, String num_jobs, String runtime) {
+        this.target_path = path;
         this.type = type;
         this.direct = direct;
         this.bs = bs;
@@ -38,9 +39,8 @@ public class benchRW {
                     "--rw=" + type + " " + "--direct=" + direct + " " +
                     "--bs=" + bs + " " + "--size=" + io_size + " " +
                     "--numjobs=" + num_jobs + " " + "--runtime=" + runtime;
-//            System.out.println("cmd: " + cmd);
             process = run.exec(cmd);
-
+            System.out.print(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = br.readLine()) != null) {
@@ -49,8 +49,6 @@ public class benchRW {
         } catch (Exception e) {
             e.fillInStackTrace();
         }
-
-//        System.out.println(res);
 
         return res;
     }

@@ -1,15 +1,23 @@
 package com.gp_android_2019.bench;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gp_android_2019.R;
@@ -17,18 +25,26 @@ import com.gp_android_2019.R;
 import java.util.ArrayList;
 
 public class BenchActivity extends AppCompatActivity {
-    private boolean[] rwCheck;
-    private boolean[] dbCheck;
-    private boolean isEmpty = true;
+    static public boolean[] rwCheck;
+    static public boolean[] dbCheck;
+    static public boolean isEmpty = true;
 
-    private String type;
-    private String direct;
-    private String bs;
-    private String io_size;
-    private String num_jobs;
-    private String runtime;
+    FragmentManager fm;
+    FragmentTransaction ft;
 
-    private int numOfTrans;
+    BenchFragment fBench;
+    TypeFragment fType;
+    SetFragment fSetting;
+
+    static public String path;
+    static public String type;
+    static public String direct;
+    static public String bs;
+    static public String io_size;
+    static public String num_jobs;
+    static public String runtime;
+
+    static public int numOfTrans;
 
     private ArrayList<String> result_rw;
     private ArrayList<String> result_db;
@@ -38,39 +54,70 @@ public class BenchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bench);
 
-        Button rw = (Button)findViewById(R.id.btn_rw);
-        Button db = (Button)findViewById(R.id.btn_db);
-        Button all = (Button)findViewById(R.id.btn_all);
-        Button bench = (Button)findViewById(R.id.btn_bench);
+        final ImageButton bench_btn = (ImageButton) findViewById(R.id.btn_bench);
+        final ImageButton type_btn = (ImageButton) findViewById(R.id.btn_type);
+        final ImageButton param_btn = (ImageButton) findViewById(R.id.btn_param);
 
-        rw.setOnClickListener( new View.OnClickListener() {
+        bench_btn.setBackgroundResource(R.color.colorSelect);
+
+        fBench = new BenchFragment();
+        fType = new TypeFragment();
+        fSetting = new SetFragment();
+
+        fm = getFragmentManager();
+
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame_layout, fType);
+        ft.commit();
+
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame_layout, fSetting);
+        ft.commit();
+
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame_layout, fBench);
+        ft.commit();
+
+        bench_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkRW();
+            public void onClick(View view) {
+                bench_btn.setBackgroundResource(R.color.colorSelect);
+                type_btn.setBackgroundResource(R.color.colorDeSelect);
+                param_btn.setBackgroundResource(R.color.colorDeSelect);
+
+                ft = fm.beginTransaction();
+                ft.replace(R.id.frame_layout, fBench);
+                ft.commit();
             }
         });
-        db.setOnClickListener( new View.OnClickListener() {
+        type_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkDB();
+            public void onClick(View view) {
+                bench_btn.setBackgroundResource(R.color.colorDeSelect);
+                type_btn.setBackgroundResource(R.color.colorSelect);
+                param_btn.setBackgroundResource(R.color.colorDeSelect);
+
+                ft = fm.beginTransaction();
+                ft.replace(R.id.frame_layout, fType);
+                ft.commit();
             }
         });
-        all.setOnClickListener( new View.OnClickListener() {
+        param_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkALL();
-            }
-        });
-        bench.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                benchmark();
+            public void onClick(View view) {
+                bench_btn.setBackgroundResource(R.color.colorDeSelect);
+                type_btn.setBackgroundResource(R.color.colorDeSelect);
+                param_btn.setBackgroundResource(R.color.colorSelect);
+
+                ft = fm.beginTransaction();
+                ft.replace(R.id.frame_layout, fSetting);
+                ft.commit();
             }
         });
     }
 
-    private void benchmark() {
-        CheckedBoxes();
+    public void benchmark(View v) {
+        fType.CheckedBoxes();
 
         if (isEmpty) {
             Toast.makeText(getApplicationContext(), "Select at least one Type", Toast.LENGTH_SHORT).show();
@@ -78,7 +125,7 @@ public class BenchActivity extends AppCompatActivity {
         }
         isEmpty = true;
 
-        makeParameter();
+        fSetting.makeParameter();
 
         CheckTypesTask task = new CheckTypesTask(BenchActivity.this);
         task.execute();
@@ -143,7 +190,7 @@ public class BenchActivity extends AppCompatActivity {
                             break;
                     }
 
-                    benchRW rw = new benchRW(type, direct, bs, io_size, num_jobs, runtime);
+                    benchRW rw = new benchRW(path, type, direct, bs, io_size, num_jobs, runtime);
                     tmp += rw.getResult();
                     try {
                         Thread.sleep(1000);
@@ -219,142 +266,6 @@ public class BenchActivity extends AppCompatActivity {
                 intent.putExtra("rw_result", result_rw);
                 intent.putExtra("db_result", result_db);
                 startActivity(intent);
-            }
-        }
-    }
-
-    private void makeParameter() {
-        direct = "0";
-        bs = "4k";
-        io_size = "1G";
-        num_jobs = "4";
-        runtime = "30";
-
-        numOfTrans = 10000;
-    }
-
-    private void CheckedBoxes() {
-        ArrayList<CheckBox> boxes = new ArrayList<>();
-
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_write));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_write));
-
-        int cnt_CheckBox = boxes.size();
-
-        rwCheck = new boolean[cnt_CheckBox];
-        for (int i=0; i < rwCheck.length; i++) {
-            if (boxes.get(i).isChecked()) {
-                rwCheck[i] = true;
-                isEmpty = false;
-            }
-            else {
-                rwCheck[i] = false;
-            }
-        }
-
-        boxes = new ArrayList<>();
-
-        boxes.add((CheckBox)findViewById(R.id.chk_insert));
-        boxes.add((CheckBox)findViewById(R.id.chk_update));
-        boxes.add((CheckBox)findViewById(R.id.chk_delete));
-
-        cnt_CheckBox = boxes.size();
-        dbCheck = new boolean[cnt_CheckBox];
-        for (int i=0; i < dbCheck.length; i++) {
-            if (boxes.get(i).isChecked()) {
-                dbCheck[i] = true;
-                isEmpty = false;
-            }
-            else {
-                dbCheck[i] = false;
-            }
-        }
-    }
-
-    private void checkRW() {
-        ArrayList<CheckBox> boxes = new ArrayList<>();
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_write));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_write));
-
-        int cnt_CheckBox = boxes.size();
-        boolean rwChk = true;
-        for (int i=0; i < cnt_CheckBox; i++) {
-            if (!boxes.get(i).isChecked()) {
-                rwChk = false;
-                break;
-            }
-        }
-
-        if (rwChk) {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(false);
-            }
-        }
-        else {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(true);
-            }
-        }
-    }
-
-    private void checkDB() {
-        ArrayList<CheckBox> boxes = new ArrayList<>();
-        boxes.add((CheckBox)findViewById(R.id.chk_insert));
-        boxes.add((CheckBox)findViewById(R.id.chk_update));
-        boxes.add((CheckBox)findViewById(R.id.chk_delete));
-
-        int cnt_CheckBox = boxes.size();
-        boolean dbChk = true;
-        for (int i=0; i < cnt_CheckBox; i++) {
-            if (!boxes.get(i).isChecked()) {
-                dbChk = false;
-                break;
-            }
-        }
-
-        if (dbChk) {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(false);
-            }
-        }
-        else {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(true);
-            }
-        }
-    }
-
-    private void checkALL() {
-        ArrayList<CheckBox> boxes = new ArrayList<>();
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_seq_write));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_read));
-        boxes.add((CheckBox)findViewById(R.id.chk_ran_write));
-        boxes.add((CheckBox)findViewById(R.id.chk_insert));
-        boxes.add((CheckBox)findViewById(R.id.chk_update));
-        boxes.add((CheckBox)findViewById(R.id.chk_delete));
-
-        int cnt_CheckBox = boxes.size();
-        boolean allChk = true;
-        for (int i=0; i < cnt_CheckBox; i++) {
-            if (!boxes.get(i).isChecked()) {
-                allChk = false;
-                break;
-            }
-        }
-
-        if (allChk) {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(false);
-            }
-        }
-        else {
-            for (int i=0; i< cnt_CheckBox; i++) {
-                boxes.get(i).setChecked(true);
             }
         }
     }
