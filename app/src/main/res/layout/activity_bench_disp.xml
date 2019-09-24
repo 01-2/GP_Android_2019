@@ -6,15 +6,15 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/tv_ttl_rw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#26C6DA"
         android:padding="10dp"
         android:text="@string/title_rw"
         android:textSize="30sp" />
 
     <LinearLayout
+        android:id="@+id/graph_rw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -88,18 +88,21 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/result_rw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/layout_seq_read"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -127,12 +130,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_seq_write"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -160,12 +165,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_ran_read"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -193,12 +200,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_ran_write"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -228,15 +237,15 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/tv_ttl_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#26C6DA"
         android:padding="10dp"
         android:text="@string/title_db"
         android:textSize="30sp" />
 
     <LinearLayout
+        android:id="@+id/graph_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -294,18 +303,21 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/result_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/layout_insert"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -333,12 +345,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_update"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -366,12 +380,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_delete"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
