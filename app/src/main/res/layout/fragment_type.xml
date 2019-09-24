@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/seq_read" />
 
     <CheckBox
@@ -44,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/seq_write" />
 
     <CheckBox
@@ -52,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/ran_read" />
 
     <CheckBox
@@ -60,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/ran_write" />
 
     <LinearLayout
@@ -94,6 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/db_insert" />
 
     <CheckBox
@@ -102,6 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/db_update" />
 
     <CheckBox
@@ -110,6 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:checked="true"
         android:text="@string/db_delete" />
 
     <LinearLayout

@@ -24,7 +24,7 @@
             android:text="Path" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/ed_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -58,7 +58,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText2"
+                    android:id="@+id/ed_bs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -67,7 +67,7 @@
                     android:text="32" />
 
                 <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/spin_unit_bs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:entries="@array/unit_bs" />
@@ -95,7 +95,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText3"
+                    android:id="@+id/ed_io_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -104,7 +104,7 @@
                     android:text="256" />
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/spin_unit_io_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:entries="@array/unit_io" />
@@ -132,7 +132,7 @@
                 android:text="@string/nThread_param" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/ed_thread"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -154,7 +154,7 @@
                 android:text="@string/runtime_param" />
 
             <EditText
-                android:id="@+id/editText5"
+                android:id="@+id/ed_run"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -183,7 +183,7 @@
                 android:text="@string/direct_param" />
 
             <Spinner
-                android:id="@+id/spinner3"
+                android:id="@+id/spin_direct"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:entries="@array/direct_io" />
@@ -203,7 +203,7 @@
                 android:text="@string/nTrans_param" />
 
             <EditText
-                android:id="@+id/editText6"
+                android:id="@+id/ed_trans"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"

@@ -15,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gp_android_2019.R;
@@ -51,10 +53,6 @@ public class BenchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bench);
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View view = (View)inflater.inflate( R.layout.fragment_bench, null );
-        Button start_btn = (Button)view.findViewById(R.id.btn_start);
 
         final ImageButton bench_btn = (ImageButton) findViewById(R.id.btn_bench);
         final ImageButton type_btn = (ImageButton) findViewById(R.id.btn_type);
@@ -108,15 +106,9 @@ public class BenchActivity extends AppCompatActivity {
                 ft.commit();
             }
         });
-        start_btn.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                benchmark();
-            }
-        });
     }
 
-    private void benchmark() {
+    public void benchmark(View v) {
         CheckedBoxes();
 
         if (isEmpty) {
@@ -132,14 +124,31 @@ public class BenchActivity extends AppCompatActivity {
     }
 
     private void makeParameter() {
-        path = "tmp";
-        direct = "0";
-        bs = "4k";
-        io_size = "1G";
-        num_jobs = "4";
-        runtime = "30";
+        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View view = (View) inflater.inflate( R.layout.fragment_set, null );
 
-        numOfTrans = 10000;
+        EditText path_ed = (EditText)view.findViewById(R.id.ed_path);
+        path = path_ed.getText().toString();
+
+        EditText bs_ed = (EditText)view.findViewById(R.id.ed_bs);
+        Spinner bs_spin = (Spinner)view.findViewById(R.id.spin_unit_bs);
+        bs = bs_ed.getText().toString() + bs_spin.getSelectedItem().toString();
+
+        EditText io_size_ed = (EditText)view.findViewById(R.id.ed_io_size);
+        Spinner io_size_spin = (Spinner)view.findViewById(R.id.spin_unit_io_size);
+        io_size = io_size_ed.getText().toString() + io_size_spin.getSelectedItem().toString();
+
+        EditText thr_ed = (EditText)view.findViewById(R.id.ed_thread);
+        num_jobs = thr_ed.getText().toString();
+
+        EditText run_ed = (EditText)view.findViewById(R.id.ed_run);
+        runtime = run_ed.getText().toString();
+
+        Spinner direct_spin = (Spinner)view.findViewById(R.id.spin_direct);
+        direct = String.valueOf(direct_spin.getSelectedItemPosition());
+
+        EditText trans_ed = (EditText)view.findViewById(R.id.ed_trans);
+        numOfTrans = Integer.valueOf(trans_ed.getText().toString());
     }
 
     private void CheckedBoxes() {
