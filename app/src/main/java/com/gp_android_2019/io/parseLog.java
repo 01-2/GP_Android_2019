@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +29,6 @@ public class parseLog {
 
         ArrayList<Integer> result = new ArrayList<>(); // index 0 : sum of read
                                                        //       1 : sum of write
-
         read = new ArrayList<>();
         write = new ArrayList<>();
 
@@ -73,6 +75,11 @@ public class parseLog {
         Pattern p2 = Pattern.compile(reg2);
         layer ret = new layer(pid);
 
+        ArrayList<Integer> device_rs = new ArrayList();
+        ArrayList<Integer> device_ws = new ArrayList();
+        ArrayList<Integer> device_re = new ArrayList();
+        ArrayList<Integer> device_we = new ArrayList();
+
         for(String str: log){
         //    if(str.indexOf("-") == -1) continue; // pid not found
 
@@ -98,38 +105,68 @@ public class parseLog {
 
                 pos = str.indexOf("/");
                 String mode = str.substring(1, pos);
-
                 pos += 1;
 
                 String rw = str.substring(pos, pos + 1);
-
                 pos = str.indexOf(" ");
-                int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
 
-                if(mode.equals("EXT4") && rw.equals("R"))
-                    ret.ext_r += amount;
-                else if (mode.equals("EXT4") && rw.equals("W"))
-                    ret.ext_w += amount;
-                else if (mode.equals("VFS") && rw.equals("R"))
-                    ret.vfs_r += amount;
-                else if (mode.equals("VFS") && rw.equals("W"))
-                    ret.vfs_w += amount;
-                else if (mode.equals("BLOCK") && rw.equals("R"))
-                    ret.block_r += amount;
-                else if (mode.equals("BLOCK") && rw.equals("W"))
-                    ret.block_w += amount;
-                else if (mode.equals("DRIVER") && rw.equals("R"))
-                    ret.driver_r += amount;
-                else if (mode.equals("DRIVer") && rw.equals("W"))
-                    ret.driver_w += amount;
-
+                if(!mode.equals("DEIVCE")){
+                    String sORe = str.substring(pos + 1, pos + 2);
+                    Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
+                    if(rw.equals("R")){
+                        if(sORe.equals("S")){
+                            device_rs.add(time_val);
+                        }
+                        else if(sORe.equals("E")){
+                            device_re.add(time_val);
+                        }
+                    }
+                    else if(rw.equals("W")){
+                        if(sORe.equals("S")){
+                            device_ws.add(time_val);
+                        }
+                        else if(sORe.equals("E")){
+                            device_we.add(time_val);
+                        }
+                    }
+                }
+                else{
+                    int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
+                    if(mode.equals("EXT4") && rw.equals("R"))
+                        ret.ext_r += amount;
+                    else if (mode.equals("EXT4") && rw.equals("W"))
+                        ret.ext_w += amount;
+                    else if (mode.equals("VFS") && rw.equals("R"))
+                        ret.vfs_r += amount;
+                    else if (mode.equals("VFS") && rw.equals("W"))
+                        ret.vfs_w += amount;
+                    else if (mode.equals("BLOCK") && rw.equals("R"))
+                        ret.block_r += amount;
+                    else if (mode.equals("BLOCK") && rw.equals("W"))
+                        ret.block_w += amount;
+                }
             }
-
         }
+        // queue 정리해서 더해주는 절차
+        int r_index = 0, w_index = 0;
+        if(device_rs.size() > device_re.size())
+            r_index = device_re.size();
+        else
+            r_index = device_rs.size();
+
+        if(device_ws.size() > device_we.size())
+            w_index = device_we.size();
+        else
+            w_index = device_ws.size();
+
+        for(int i = 0; i < r_index; i++)
+            ret.driver_r += Math.abs((device_re.get(i) - device_rs.get(i)));
+
+        for(int i = 0; i < w_index; i++)
+            ret.driver_w += Math.abs((device_we.get(i) - device_ws.get(i)));
 
         return ret;
     }
-
 
 
     public ArrayList<String> suCommand(String cmd){
