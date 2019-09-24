@@ -123,13 +123,7 @@
                 android:switchMinWidth="80dp"
 
                 />
-            <Button
-                android:id="@+id/app_launch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="LAUNCH"
-                android:gravity="center"/>
-        </TableRow>
+            </TableRow>
     </TableLayout>
     <TableLayout
         android:layout_width="match_parent"
@@ -522,7 +516,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:text="compare" />
+                android:text="compare"
+                android:layout_span="2"
+                />
         </TableRow>
     </TableLayout>
 

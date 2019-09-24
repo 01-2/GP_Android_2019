@@ -68,10 +68,9 @@ public class ioAppResult extends AppCompatActivity {
         final String sdir_name = prevIntent.getStringExtra("SDIR_NAME");
         final String ddir_name = prevIntent.getStringExtra("DDIR_NAME");
 
-        Button appLaunchBtn = (Button) findViewById(R.id.app_launch);
         Button save1Btn = (Button) findViewById(R.id.save1);
         Button save2Btn =  (Button) findViewById(R.id.save2);
-        Button compareBtn = (Button) findViewById(R.id.save2);
+        Button compareBtn = (Button) findViewById(R.id.compare);
         Switch traceSwitch = (Switch) findViewById(R.id.trace_switch);
 
         TextView app_aview = (TextView) findViewById(R.id.app_textview);
@@ -116,6 +115,10 @@ public class ioAppResult extends AppCompatActivity {
                     suCommand("echo function > /sys/kernel/debug/tracing/current_tracer");
                     suCommand("echo nop > /sys/kernel/debug/tracing/current_tracer");
                     suCommand("echo 1 > /sys/kernel/debug/tracing/tracing_on");
+
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(pack_name);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
                 else {
                     suCommand("echo 0 > /sys/kernel/debug/tracing/tracing_on");
@@ -127,18 +130,11 @@ public class ioAppResult extends AppCompatActivity {
                     l = p.parseAll(tpid);
 
                     drawGraph();
+                    suCommand("kill " + tpid);
                 }
             }
         });
 
-        appLaunchBtn.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = getPackageManager().getLaunchIntentForPackage(pack_name);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
         save1Btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,7 +143,7 @@ public class ioAppResult extends AppCompatActivity {
                     t = Toast.makeText(getApplicationContext(), "Run application first", Toast.LENGTH_LONG);
                     t.show();
                 }else {
-                    s1 = l;
+                    s1 = new layer(l);
                     l.clear();
 
                     t = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG);
@@ -163,7 +159,7 @@ public class ioAppResult extends AppCompatActivity {
                     t = Toast.makeText(getApplicationContext(), "Run application first", Toast.LENGTH_LONG);
                     t.show();
                 }else {
-                    s2 = l;
+                    s2 = new layer(l);
                     l.clear();
 
                     t = Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG);
@@ -182,8 +178,11 @@ public class ioAppResult extends AppCompatActivity {
                     t = Toast.makeText(getApplicationContext(), "Save slot 2 empty. You should save result first", Toast.LENGTH_LONG);
                     t.show();
                 } else {
-                    t = Toast.makeText(getApplicationContext(), "Hida", Toast.LENGTH_LONG);
-                    t.show();
+                    Intent intent = new Intent(getApplicationContext(), ioCompareActivity.class);
+                    ioCompare save = new ioCompare(s1, s2);
+
+                    intent.putExtra("save", save);
+                    startActivity(intent);
                 }
             }
 
@@ -223,10 +222,6 @@ public class ioAppResult extends AppCompatActivity {
         driver_r.setText(Integer.toString(l.driver_r) + "us");
         driver_w.setText(Integer.toString(l.driver_w) + "us");
 
-
-        int max_r = getMaxR();
-        int max_w = getMaxW();
-        //calc mean
         float div_r = l.vfs_r + l.driver_r + l.block_r + l.ext_r;
         float div_w = l.vfs_w + l.driver_w + l.block_w + l.ext_w;
 
@@ -262,36 +257,11 @@ public class ioAppResult extends AppCompatActivity {
         g_driver_r.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, driver_rr/div_r));
 
         //draw w graph
-        g_vfs_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, vfs_ww));
-        g_ext4_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, ext_ww));
-        g_block_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, block_ww));
-        g_driver_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, driver_ww));
+        g_vfs_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, vfs_ww/div_w));
+        g_ext4_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, ext_ww/div_w));
+        g_block_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, block_ww/div_w));
+        g_driver_w.setLayoutParams(new TableRow.LayoutParams(0,  TableRow.LayoutParams.MATCH_PARENT, driver_ww/div_w));
 
-    }
-    public int getMaxW(){
-        int max = l.vfs_w;
-
-        if(l.ext_r > max)
-            max = l.ext_w;
-        if(l.block_r > max)
-            max = l.block_w;
-        if(l.driver_r > max)
-            max = l.driver_w;
-
-        return max;
-    }
-
-    public int getMaxR(){
-        int max = l.vfs_r;
-
-        if(l.ext_r > max)
-            max = l.ext_r;
-        if(l.block_r > max)
-            max = l.block_r;
-        if(l.driver_r > max)
-            max = l.driver_r;
-
-        return max;
     }
 
     public int getAppPid(String p_name){
@@ -316,6 +286,7 @@ public class ioAppResult extends AppCompatActivity {
         TextView part_ext4 = (TextView) findViewById(R.id.g_ext4);
         TextView part_block = (TextView) findViewById(R.id.g_block);
         TextView part_driver = (TextView) findViewById(R.id.g_driver);
+
     }
 
 

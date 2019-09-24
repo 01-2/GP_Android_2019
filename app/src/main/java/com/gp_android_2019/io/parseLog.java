@@ -81,13 +81,7 @@ public class parseLog {
         ArrayList<Integer> device_we = new ArrayList();
 
         for(String str: log){
-        //    if(str.indexOf("-") == -1) continue; // pid not found
-
-
-          //  str = str.substring(4, str.length());
-          //  int pos = str.indexOf("-");
-           // int space = str.indexOf(" ");;
-
+            int flag = str.indexOf(pid.toString());
             Matcher m = p2.matcher(str);
             if(!m.find())
                 continue;
@@ -110,9 +104,9 @@ public class parseLog {
                 String rw = str.substring(pos, pos + 1);
                 pos = str.indexOf(" ");
 
-                if(!mode.equals("DEIVCE")){
+                if(mode.equals("DEVICE")){
                     String sORe = str.substring(pos + 1, pos + 2);
-                    Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
+                    Integer time_val = Integer.parseInt(str.substring(pos + 3, str.length()));
                     if(rw.equals("R")){
                         if(sORe.equals("S")){
                             device_rs.add(time_val);
@@ -130,7 +124,7 @@ public class parseLog {
                         }
                     }
                 }
-                else{
+                else if (flag != -1){
                     int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
                     if(mode.equals("EXT4") && rw.equals("R"))
                         ret.ext_r += amount;

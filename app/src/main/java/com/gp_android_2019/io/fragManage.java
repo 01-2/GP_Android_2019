@@ -102,9 +102,6 @@ public class fragManage {
         String frag = "find " + appDataPath + " f -exec /system/xbin/filefrag {} \\;";
         ArrayList<String> files = suCommand(frag);
 
-        parseLog p = new parseLog();
-        p.parseAll(3569);
-
         appFileNum = files.size();
         appNeedToDefrag = getFragmentedFiles(files);
         appFragmentedFileNum = appNeedToDefrag.size();
