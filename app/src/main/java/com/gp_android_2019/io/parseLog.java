@@ -74,6 +74,11 @@ public class parseLog {
 
         layer ret = new layer(pid);
 
+        ArrayList<Integer> block_rs = new ArrayList();
+        ArrayList<Integer> block_ws = new ArrayList();
+        ArrayList<Integer> block_re = new ArrayList();
+        ArrayList<Integer> block_we = new ArrayList();
+
         ArrayList<Integer> device_rs = new ArrayList();
         ArrayList<Integer> device_ws = new ArrayList();
         ArrayList<Integer> device_re = new ArrayList();
@@ -99,7 +104,7 @@ public class parseLog {
                 String rw = str.substring(pos, pos + 1);
                 pos = str.indexOf(" ");
 
-                if(!mode.equals("DEIVCE")){
+                if(mode.equals("DEVICE")){
                     String sORe = str.substring(pos + 1, pos + 2);
                     Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
                     if(rw.equals("R")){
@@ -118,10 +123,28 @@ public class parseLog {
                             device_we.add(time_val);
                         }
                     }
-                }
-                else{
-                    int amount = Integer.parseInt(str.substring(pos + 1, str.length()));
-                    if(mode.equals("EXT4") && rw.equals("R"))
+                } else if (mode.equals("BLOCK")) {
+                    String sORe = str.substring(pos + 1, pos + 2);
+                    Integer time_val = Integer.parseInt(str.substring(pos + 2, str.length()));
+                    if(rw.equals("R")){
+                        if(sORe.equals("S")){
+                            block_rs.add(time_val);
+                        }
+                        else if(sORe.equals("E")){
+                            block_re.add(time_val);
+                        }
+                    }
+                    else if(rw.equals("W")){
+                        if(sORe.equals("S")){
+                            block_ws.add(time_val);
+                        }
+                        else if(sORe.equals("E")){
+                            block_we.add(time_val);
+                        }
+                    }
+                } else {
+                    Integer amount = Integer.parseInt(str.substring(pos + 1, str.length()));
+                    if (mode.equals("EXT4") && rw.equals("R"))
                         ret.ext_r += amount;
                     else if (mode.equals("EXT4") && rw.equals("W"))
                         ret.ext_w += amount;
@@ -129,10 +152,6 @@ public class parseLog {
                         ret.vfs_r += amount;
                     else if (mode.equals("VFS") && rw.equals("W"))
                         ret.vfs_w += amount;
-                    else if (mode.equals("BLOCK") && rw.equals("R"))
-                        ret.block_r += amount;
-                    else if (mode.equals("BLOCK") && rw.equals("W"))
-                        ret.block_w += amount;
                 }
             }
         }
@@ -153,6 +172,23 @@ public class parseLog {
 
         for(int i = 0; i < w_index; i++)
             ret.driver_w += Math.abs((device_we.get(i) - device_ws.get(i)));
+
+        // BLOCK
+        if(block_rs.size() > block_re.size())
+            r_index = block_re.size();
+        else
+            r_index = block_rs.size();
+
+        if(block_ws.size() > block_we.size())
+            w_index = block_we.size();
+        else
+            w_index = block_ws.size();
+
+        for(int i = 0; i < r_index; i++)
+            ret.driver_r += Math.abs((block_re.get(i) - block_rs.get(i)));
+
+        for(int i = 0; i < w_index; i++)
+            ret.driver_w += Math.abs((block_we.get(i) - block_ws.get(i)));
 
         return ret;
     }
