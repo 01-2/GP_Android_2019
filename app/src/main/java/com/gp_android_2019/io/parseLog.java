@@ -68,19 +68,30 @@ public class parseLog {
 
     public layer parseAll(Integer pid){
         String reg = ".*\\:.*\\: ";
+        String reg2 = ".*-";
         Pattern p = Pattern.compile(reg);
-
+        Pattern p2 = Pattern.compile(reg2);
         layer ret = new layer(pid);
 
         for(String str: log){
-            if(str.indexOf("-") == -1) continue; // pid not found
+        //    if(str.indexOf("-") == -1) continue; // pid not found
 
-            int pos = str.indexOf("-");
-            int space = str.indexOf(" ");
 
-            if(pid != Integer.parseInt(str.substring(pos + 1, space))) continue;
+          //  str = str.substring(4, str.length());
+          //  int pos = str.indexOf("-");
+           // int space = str.indexOf(" ");;
 
-            Matcher m = p.matcher(str);
+            Matcher m = p2.matcher(str);
+            if(!m.find())
+                continue;
+
+            int pos = m.group().length();
+            str = str.substring(pos, str.length());
+            int space = str.indexOf(" ");;
+
+            if(pid != Integer.parseInt(str.substring(0, space))) continue;
+
+            m = p.matcher(str);
             if(m.find()){
                 pos = m.group().length();
                 str = str.substring(pos, str.length());
@@ -145,8 +156,7 @@ public class parseLog {
     }
 
     parseLog(){
-        log = suCommand("cat /data/data/com.gp_android_2019/a.txt");
-        //log = suCommand("cat /sys/kernel/debug/tracing/trace");
+        log = suCommand("cat /sys/kernel/debug/tracing/trace");
 
         for(Iterator<String> it = log.iterator(); it.hasNext();){
             String str = it.next();
