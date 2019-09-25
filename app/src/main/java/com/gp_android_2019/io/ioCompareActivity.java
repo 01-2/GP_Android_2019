@@ -51,10 +51,10 @@ public class ioCompareActivity extends AppCompatActivity {
 
         float vfss = -999 , extt = -999 , blockk = -999, driverr=-999;
 
-        if (l1.vfs_r != 0 && l2.vfs_r != 0) vfss = (l1.vfs_r > l2.vfs_r) ? -(float)(l1.vfs_r / l2.vfs_r) : (float)(l2.vfs_r / l1.vfs_r);
-        if (l1.ext_r != 0 && l2.ext_r != 0) extt = (l1.ext_r > l2.ext_r) ? -(float)(l1.ext_r / l2.ext_r) : -(float)(l2.ext_r / l1.ext_r);
-        if (l1.block_r != 0 && l2.block_r != 0) blockk = (l1.block_r > l2.block_r) ?  -(float)(l1.block_r / l2.block_r) : (float)(l2.block_r /l1.block_r);
-        if (l1.driver_r != 0 && l2.driver_r != 0) driverr = (l1.driver_r > l2.driver_r) ? -(float)(l1.driver_r / l2.driver_r) : (float)(l2.driver_r / l1.driver_r);
+        if (l1.vfs_r != 0 && l2.vfs_r != 0) vfss = (l1.vfs_r > l2.vfs_r) ? (float)(l1.vfs_r / l2.vfs_r) : -(float)(l2.vfs_r / l1.vfs_r);
+        if (l1.ext_r != 0 && l2.ext_r != 0) extt = (l1.ext_r > l2.ext_r) ? (float)(l1.ext_r / l2.ext_r) : -(float)(l2.ext_r / l1.ext_r);
+        if (l1.block_r != 0 && l2.block_r != 0) blockk = (l1.block_r > l2.block_r) ?  (float)(l1.block_r / l2.block_r) : -(float)(l2.block_r /l1.block_r);
+        if (l1.driver_r != 0 && l2.driver_r != 0) driverr = (l1.driver_r > l2.driver_r) ? (float)(l1.driver_r / l2.driver_r) : -(float)(l2.driver_r / l1.driver_r);
 
         vfs.setText( Integer.toString(abs(l1.vfs_r - l2.vfs_r)) );
         ext.setText( Integer.toString(abs(l1.ext_r - l2.ext_r)) );
@@ -90,10 +90,10 @@ public class ioCompareActivity extends AppCompatActivity {
 
         vfss = -999; extt = -999; blockk = -999; driverr=-999;
 
-        if (l1.vfs_w != 0 && l2.vfs_w != 0) vfss = (l1.vfs_w > l2.vfs_w) ? -(float)(l1.vfs_w / l2.vfs_w) : -(float)(l2.vfs_w / l1.vfs_w);
-        if (l1.ext_w != 0 && l2.ext_w != 0) extt = (l1.ext_w > l2.ext_w) ? -(float)(l1.ext_w / l2.ext_w) : -(float)(l2.ext_w / l1.ext_w);
-        if (l1.block_w != 0 && l2.block_w != 0) blockk = (l1.block_w > l2.block_w) ?  -(float)(l1.block_w / l2.block_w) : -(float)(l2.block_w /l1.block_w);
-        if (l1.driver_w != 0 && l2.driver_w != 0) driverr = (l1.driver_w > l2.driver_w) ? -(float)(l1.driver_w / l2.driver_w) : -(float)(l2.driver_w / l1.driver_w);
+        if (l1.vfs_w != 0 && l2.vfs_w != 0) vfss = (l1.vfs_w > l2.vfs_w) ? -(float)(l1.vfs_w / l2.vfs_w) : (float)(l2.vfs_w / l1.vfs_w);
+        if (l1.ext_w != 0 && l2.ext_w != 0) extt = (l1.ext_w > l2.ext_w) ? -(float)(l1.ext_w / l2.ext_w) : (float)(l2.ext_w / l1.ext_w);
+        if (l1.block_w != 0 && l2.block_w != 0) blockk = (l1.block_w > l2.block_w) ?  -(float)(l1.block_w / l2.block_w) : (float)(l2.block_w /l1.block_w);
+        if (l1.driver_w != 0 && l2.driver_w != 0) driverr = (l1.driver_w > l2.driver_w) ? -(float)(l1.driver_w / l2.driver_w) : (float)(l2.driver_w / l1.driver_w);
 
         vfs.setText( Integer.toString(abs(l1.vfs_w - l2.vfs_w)) );
         ext.setText( Integer.toString(abs(l1.ext_w - l2.ext_w)) );
