@@ -11,8 +11,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.Math.abs;
 
 public class parseLog {
     ArrayList<String> log;
@@ -159,6 +162,7 @@ public class parseLog {
                         ret.vfs_w += amount;
                 }
             }
+
         }
         // queue 정리해서 더해주는 절차
         int r_index = 0, w_index = 0;
@@ -173,10 +177,10 @@ public class parseLog {
             w_index = device_ws.size();
 
         for(int i = 0; i < r_index; i++)
-            ret.driver_r += Math.abs((device_re.get(i) - device_rs.get(i)));
+            ret.driver_r += abs((device_re.get(i) - device_rs.get(i)));
 
         for(int i = 0; i < w_index; i++)
-            ret.driver_w += Math.abs((device_we.get(i) - device_ws.get(i)));
+            ret.driver_w += abs((device_we.get(i) - device_ws.get(i)));
 
         // BLOCK
         if(block_rs.size() > block_re.size())
@@ -190,10 +194,10 @@ public class parseLog {
             w_index = block_ws.size();
 
         for(int i = 0; i < r_index; i++)
-            ret.driver_r += Math.abs((block_re.get(i) - block_rs.get(i)));
+            ret.block_r += abs((block_re.get(i) - block_rs.get(i)));
 
         for(int i = 0; i < w_index; i++)
-            ret.driver_w += Math.abs((block_we.get(i) - block_ws.get(i)));
+            ret.block_w += abs((block_we.get(i) - block_ws.get(i)));
 
         return ret;
     }
